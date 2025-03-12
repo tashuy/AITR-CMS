@@ -104,7 +104,6 @@ const Faculty = () => {
     }
   }, [filter, facultyData]);
 
-
   useEffect(() => {
     let filtered = facultyData;
 
@@ -122,16 +121,28 @@ const Faculty = () => {
       filtered = filtered.filter(item => item[filter] === selectedFilterValue);
     }
 
-    // 🔍 Date Range Filter (Applies only if both startDate and endDate are selected)
+    // 🔍 Date Range Filter (Handles multiple date field names)
     if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
       filtered = filtered.filter(item => {
-        const itemDate = new Date(item["start_date"]); // Change "start_date" to your actual date column
-        return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
+        let itemDate = null;
+
+        // Identify the correct date field based on selectedCategory
+        if (selectedCategory === "ResearchPaper") itemDate = new Date(item["publication_date"]);
+        else if (selectedCategory === "Awards") itemDate = new Date(item["award_date"]);
+        else if (selectedCategory === "Conference") itemDate = new Date(item["presentation_date"]);
+        else if (selectedCategory === "DevelopmentProgram") itemDate = new Date(item["start_date"]);
+        else if (selectedCategory === "Patents") itemDate = new Date(item["application_date"]);
+
+        return itemDate && itemDate >= start && itemDate <= end;
       });
     }
 
     setFilteredData(filtered);
   }, [searchQuery, selectedFilterValue, startDate, endDate, facultyData]);
+
 
 
 
@@ -142,8 +153,12 @@ const Faculty = () => {
     }
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, selectedCategory);
-    XLSX.writeFile(workbook, `${selectedCategory}_Data.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, selectedCategory || "Sheet1");
+
+    // Ensure the file name is valid
+    const fileName = selectedCategory ? `${selectedCategory}_Data.xlsx` : "Exported_Data.xlsx";
+    XLSX.writeFile(workbook, fileName);
+
   };
 
   return (

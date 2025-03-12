@@ -41,6 +41,9 @@ const AIML = () => {
   const [filterValues, setFilterValues] = useState("");
   const [uniqueFilterValues, setUniqueFilterValues] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
 
   const CategoriesDetails = {
     Students: [],
@@ -117,12 +120,23 @@ const AIML = () => {
       )
     );
 
-    if (filter && filterValues) {
-      filtered = filtered.filter(item => item[filter] === filterValues);
+    if (startDate && endDate) {
+      filtered = filtered.filter(item => {
+        const dateFields = ["issue_date", "date", "joining_date", "start_date", "publication_date", "event_date"];
+        return dateFields.some(field => {
+          if (item[field]) {
+            const itemDate = new Date(item[field]);
+            return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
+          }
+          return false;
+        });
+      });
     }
 
+
     setFilteredData(filtered);
-  }, [searchQuery, filterValues, studentData]);
+  }, [searchQuery, filterValues, startDate, endDate, studentData]);
+
 
   const handleDownload = () => {
     if (filteredData.length === 0) {
@@ -145,8 +159,7 @@ const AIML = () => {
           </h1>
         </div>
       </div>
-
-      <div className="w-[80vw] mx-auto my-8 flex gap-4">
+      <div className="w-[80vw] mx-auto my-8 flex gap-4 items-center">
         <input
           type="text"
           placeholder="Search..."
@@ -154,6 +167,7 @@ const AIML = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+
         {selectedCategory && (
           <select
             className="p-3 border text-black font-semibold border-gray-400 rounded"
@@ -161,24 +175,58 @@ const AIML = () => {
             onChange={(e) => setFilter(e.target.value)}
           >
             <option value="">Filter by</option>
-            {tableHeaders[selectedCategory].map((header, index) => (
-              <option key={index} value={header}>{header}</option>
-            ))}
+            {tableHeaders[selectedCategory]
+              .filter(header => header !== "id")
+              .map((header, index) => (
+                <option key={index} value={header}>{header}</option>
+              ))}
           </select>
         )}
+
         {filter && (
           <select
             className="p-3 border text-black font-semibold border-gray-400 rounded"
-            value={filterValues}
-            onChange={(e) => setFilterValues(e.target.value)}
+            value={selectedFilterValue}
+            onChange={(e) => setSelectedFilterValue(e.target.value)}
           >
             <option value="">Select Value</option>
-            {uniqueFilterValues.map((value, index) => (
+            {filterValues.map((value, index) => (
               <option key={index} value={value}>{value}</option>
             ))}
           </select>
         )}
+
+        {/* Date Range Filter */}
+        {selectedCategory && (
+          <div className="flex gap-4 items-center">
+            <label className="font-semibold text-black">Start Date:</label>
+            <input
+              type="date"
+              className="p-2 border text-black font-semibold border-gray-400 rounded"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+
+            <label className="font-semibold text-black">End Date:</label>
+            <input
+              type="date"
+              className="p-2 border text-black font-semibold border-gray-400 rounded"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+            <button
+              className="px-4 py-2 bg-red-600 text-white font-semibold rounded"
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+            >
+              Clear data Filter
+            </button>
+          </div>
+        )}
       </div>
+
 
       <div className="w-[80vw] m-auto mt-8">
         <div className="flex justify-center gap-2 py-2">
