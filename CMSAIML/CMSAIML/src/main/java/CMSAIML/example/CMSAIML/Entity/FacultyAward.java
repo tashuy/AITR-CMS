@@ -5,24 +5,20 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "faculty_award") // Explicit table name
+@Table(name = "faculty_award")
 @Data
 public class FacultyAward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    private String faculty_name;
-
-
-    private String award_name;
-
-
-    private String awarded_by;
-
-
-    private LocalDate award_date;
-
-
+    private String facultyName;
+    private String awardName;
+    private String awardedBy;
+    private LocalDate awardDate;
+    private String category;
+    private String recognitionType;
+    private String eventName;
+    private String description;
+    private String certificateLink;
 }
