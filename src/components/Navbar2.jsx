@@ -5,9 +5,10 @@ const Navbar2 = () => {
 
   return (
     <div className="h-20 bg-slate-100 flex items-center justify-between text-black text-lg font-medium">
-      <div className="ml-48 gap-10 flex items-center">
+      <div className="ml-48 gap-10 flex items-center capitalize">
         <Link to="/">Home</Link>
-       
+        <Link to="/institute">institute</Link>        
+        <Link to="/department">department</Link>
         <Link to="/faculty">Faculty</Link>
         <Link to="/students">Students</Link>
       </div>
