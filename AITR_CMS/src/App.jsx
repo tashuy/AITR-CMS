@@ -7,7 +7,8 @@ import Faculty from "./components/Faculty_Page";
 import Student from "./components/AIML";
 import Admin from "./components/Admin";
 import AdminDashboard from "./components/AdminDashboard";
-
+import Institute from "./components/Institute";
+import Department from "./components/Department";
 const App = () => {
   return (
     <Router>
@@ -17,6 +18,8 @@ const App = () => {
         <Navbar2 />
         <Routes>
           <Route path="/" element={<Page1 />} />
+          <Route path="/institute" element={<Institute/>}/>;
+          <Route path="/department" element={<Department/>}/>;
           <Route path="/faculty" element={<Faculty />} />
           <Route path="/students" element={<Student />} />          
           <Route path="/admin" element={<Admin />} />

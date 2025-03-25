@@ -1,220 +1,316 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import AIMLBG from "./img/AIML_IMG.webp";
-import { fetchFacultyData,fetchFacultyawardsData,fetchFacultyconferencesData,fetchFacultyfdpsData,fetchFacultypatentsData,fetchFacultyresearchpapersData } from "../api";
-
-const Table = ({ columns, data }) => {
-  if (!data || data.length === 0) {
-    return <p className="text-gray-500">No data available.</p>;
-  }
-  return (
-    <table className="w-full text-center mt-4 bg-white text-[#75161C] border-collapse">
-      <thead>
-        <tr className="border-b-2 border-l-2 border-[#75161C] text-black">
-          {columns.map((col, index) => (
-            <th key={index} className="px-4 py-2 border-r-2 border-t-2 border-[#75161C]">
-              {col}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row, rowIndex) => (
-          <tr key={rowIndex} className="bg-white border-b-2 border-l-2 border-[#75161C]">
-            {columns.map((col, cellIndex) => (
-              <td key={cellIndex} className="px-4 py-2 border-r-2 border-[#75161C]">
-                {row[col]}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
+import {
+  fetchFacultyData,
+  fetchFacultyawardsData,
+  fetchFacultyconferencesData,
+  fetchFacultyfdpsData,
+  fetchFacultypatentsData,
+  fetchFacultyresearchpapersData,
+} from "../api";
 
 const Faculty = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [facultyData, setFacultyData] = useState([]);
-  const [filter, setFilter] = useState("");
-  const [filterValues, setFilterValues] = useState([]);
-  const [selectedFilterValue, setSelectedFilterValue] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
-  const CategoriesDetails = {
-    Faculty: [],
-    ResearchPaper: [],
-    Conference: [],
-    Awards: [],
-    DevelopmentProgram: [],
-    Patents:[],
-  };
+  const [selectedColumns, setSelectedColumns] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const tableHeaders = {
-    Faculty: ["id", "email", "name", "department"],
-    ResearchPaper: ["id","faculty_name", "title", "publication_date", "journal_name", "co_authors"],
-    Awards: ["id", "faculty_name", "award_name", "awarded_by", "award_date"],
-    Conference: ["id", "faculty_name", "conference_name", "paper_title","presentation_date"],
-    DevelopmentProgram: ["id", "faculty_name", "program_name", "organized_by", "start_date","end_date"],
-    Patents:["id","faculty_name","patent_title","patent_number","application_date","status"]
+    Faculty: ["ID", "NAME", "EMAIL", "DEPARTMENT", "MOBILE NUMBER", "YEARS OF EXPERIENCE", "DESIGNATION"],
+    ResearchPaper: [
+      "id",
+      "faculty_name",
+      "title",
+      "publication_date",
+      "journal_name",
+      "co_authors",
+    ],
+    Awards: [
+      "ID",
+      "FACULTY NAME",
+      "AWARD NAME",
+      "AWARDED BY",
+      "AWARD DATE",
+      "CATEGORY",
+      "RECOGNITION TYPE",
+      "EVENT NAME",
+      "DESCRIPTION",
+      "CERTIFICATE LINK",
+    ],
+    Conference: [
+      "ID",
+      "FACULTY NAME",
+      "CONFERENCE NAME",
+      "PAPER TITLE",
+      "PRESENTATION DATE",
+      "CONFERENCE TYPE",
+      "CONFERENCE LOCATION",
+      "CONFERENCE MODE",
+      "PUBLICATION STATUS",
+      "JOURNAL NAME",
+      "ISSN NUMBER",
+      "INDEXING",
+      "CERTIFICATE LINK",
+    ],
+    DevelopmentProgram: [
+      "ID",
+      "FACULTY NAME",
+      "PROGRAM NAME",
+      "ORGANIZED BY",
+      "START DATE",
+      "END DATE",
+      "PROGRAM TYPE",
+      "MODE",
+      "LOCATION",
+      "DURATION DAYS",
+      "CERTIFICATE LINK",
+    ],
+    Patents: [
+      "ID",
+      "FACULTY NAME",
+      "PATENT TITLE",
+      "PATENT NUMBER",
+      "APPLICATION DATE",
+      "STATUS",
+      "INVENTOR NAMES",
+      "PATENT TYPE",
+      "PATENT OFFICE",
+      "GRANT DATE",
+      "EXPIRY DATE",
+      "COUNTRY",
+      "PATENT CATEGORY",
+      "CERTIFICATE LINK",
+    ],
   };
+
   useEffect(() => {
     if (selectedCategory) {
       const getData = async () => {
         try {
           let data = [];
-          if (selectedCategory === "Faculty") {
-            data = await fetchFacultyData();
-          } else if (selectedCategory === "Awards") {
-            data = await fetchFacultyawardsData();
-          } else if (selectedCategory === "Conference") {
-            data = await fetchFacultyconferencesData();
-          } else if (selectedCategory === "DevelopmentProgram") {
-            data = await fetchFacultyfdpsData();
-          } else if (selectedCategory === "Patents") {
-            data = await fetchFacultypatentsData();
-          } else if (selectedCategory === "ResearchPaper") {
-            data = await fetchFacultyresearchpapersData();
+          switch (selectedCategory) {
+            case "Faculty":
+              data = await fetchFacultyData();
+              break;
+            case "Awards":
+              data = await fetchFacultyawardsData();
+              break;
+            case "Conference":
+              data = await fetchFacultyconferencesData();
+              break;
+            case "DevelopmentProgram":
+              data = await fetchFacultyfdpsData();
+              break;
+            case "Patents":
+              data = await fetchFacultypatentsData();
+              break;
+            case "ResearchPaper":
+              data = await fetchFacultyresearchpapersData();
+              break;
+            default:
+              break;
           }
-  
-          if (data) {
-            setFacultyData(data);  // ✅ Set facultyData instead of filteredData
-            setFilteredData(data); // Keep filteredData updated as well
-          }
+
+          data = data.map((item) => ({
+            ...item,
+            publication_date: item.publication_date
+              ? new Date(item.publication_date).toISOString().split("T")[0]
+              : "",
+            award_date: item.award_date
+              ? new Date(item.award_date).toISOString().split("T")[0]
+              : "",
+            presentation_date: item.presentation_date
+              ? new Date(item.presentation_date).toISOString().split("T")[0]
+              : "",
+            application_date: item.application_date
+              ? new Date(item.application_date).toISOString().split("T")[0]
+              : "",
+            start_date: item.start_date
+              ? new Date(item.start_date).toISOString().split("T")[0]
+              : "",
+          }));
+
+          setFacultyData(data);
+          setFilteredData(data);
+          setSelectedColumns(tableHeaders[selectedCategory]);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
       };
+
       getData();
     }
   }, [selectedCategory]);
-  
-  
-  
-  
-  
 
-  useEffect(() => {
-    if (filter && facultyData.length > 0) {
-      const uniqueValues = [...new Set(facultyData.map(item => item[filter]))];
-      setFilterValues(uniqueValues);
-    } else {
-      setFilterValues([]);
-    }
-  }, [filter, facultyData]);
+  const handleColumnSelection = (column) => {
+    setSelectedColumns((prev) =>
+      prev.includes(column)
+        ? prev.filter((col) => col !== column)
+        : [...prev, column]
+    );
+  };
+  const applyFilters = () => {
+    let filtered = facultyData.filter((item) =>
+      Object.values(item).some((value) =>
+        value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
 
-  useEffect(() => {
-    let filtered = facultyData;
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
 
-    if (searchQuery) {
-      filtered = filtered.filter(item =>
-        Object.values(item).some(value =>
-          value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    }
+      filtered = filtered.filter((item) => {
+        const dateFields = [
+          "AWARD DATE",
+          "publication_date",
+         "PRESENTATION DATE",
+          "application_date",
+          "START DATE",
+          "END DATE",
+          "GRANT DATE",
+      "EXPIRY DATE",
+        ];
 
-    if (selectedFilterValue) {
-      filtered = filtered.filter(item => item[filter] === selectedFilterValue);
+        return dateFields.some((field) => {
+          if (item[field]) {
+            const itemDate = new Date(item[field]);
+            return itemDate >= start && itemDate <= end;
+          }
+          return false;
+        });
+      });
     }
 
     setFilteredData(filtered);
-  }, [searchQuery, selectedFilterValue, facultyData]);
+  };
+useEffect(() => {
+  applyFilters();
+}, [searchQuery, startDate, endDate, facultyData]); // Ensure it runs whenever data or filters change
 
-  const handleDownload = () => {
-    if (filteredData.length === 0) {
-      alert("No data available to download.");
-      return;
-    }
+
+
+  const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, selectedCategory);
-    XLSX.writeFile(workbook, `${selectedCategory}_Data.xlsx`);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Faculty Data");
+    XLSX.writeFile(workbook, "Faculty_Data.xlsx");
   };
 
   return (
     <div className="w-full h-full bg-white">
-      {/* Background Section */}
       <div className="w-full h-96 relative bg-[#030927]">
-        <img className="absolute inset-0 w-full h-full object-cover opacity-30 z-0" src={AIMLBG} alt="Faculty Background" />
+        <img
+          className="absolute inset-0 w-full h-full object-cover opacity-30 z-0"
+          src={AIMLBG}
+          alt="Faculty Background"
+        />
         <div className="relative z-10 flex items-center justify-center h-full">
           <h1 className="text-white text-4xl text-center -mt-16 font-semibold">
             Faculty Details & Achievements
           </h1>
         </div>
       </div>
+      <div className="w-[80vw] mx-auto my-8 flex gap-4 items-center">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="flex-1 p-3 border text-black font-semibold border-gray-400 rounded"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            applyFilters(); // Apply filter whenever the search text changes
+          }}
+        />
 
-    {/* Filter Section */}
-<div className="w-[80vw] mx-auto my-8 flex gap-4 items-center">
-  <input
-    type="text"
-    placeholder="Search..."
-    className="flex-1 p-3 border text-black font-semibold border-gray-400 rounded"
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-  />
-  {selectedCategory && (
-    <select
-      className="p-3 border text-black font-semibold border-gray-400 rounded"
-      value={filter}
-      onChange={(e) => setFilter(e.target.value)}
-    >
-      <option value="">Filter by</option>
-      {tableHeaders[selectedCategory]
-        .filter(header => header !== "id")
-        .map((header, index) => (
-          <option key={index} value={header}>{header}</option>
+        {Object.keys(tableHeaders).map((category) => (
+          <button
+            key={category}
+            className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded"
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
         ))}
-    </select>
-  )}
-
-  {filter && (
-    <select
-      className="p-3 border text-black font-semibold border-gray-400 rounded"
-      value={selectedFilterValue}
-      onChange={(e) => setSelectedFilterValue(e.target.value)}
-    >
-      <option value="">Select Value</option>
-      {filterValues.map((value, index) => (
-        <option key={index} value={value}>{value}</option>
-      ))}
-    </select>
-  )}
-</div>
-
-{/* Show result count */}
-{selectedCategory && (
-  <p className="text-lg font-semibold text-[#75161C] text-center">
-    Results Found: {filteredData.length}
-  </p>
-)}
-
-
-      {/* Faculty Table Section */}
-      <div className="w-[80vw] m-auto mt-8">
-        <div className="flex justify-center gap-2 py-2">
-          {Object.keys(CategoriesDetails).map((category, index) => (
-            <button
-              key={index}
-              className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded"
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {selectedCategory && (
-          <div className="mt-10">
-            <h2 className="text-4xl font-extrabold text-[#00062B] mb-6">
-              {selectedCategory}
-            </h2>
-            <Table columns={tableHeaders[selectedCategory]} data={filteredData} />
-            <button onClick={handleDownload} className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded">
-              Download {selectedCategory} Data
-            </button>
+      </div>
+      {selectedCategory && (
+        <div className="w-[80vw] mx-auto my-4 p-4 border border-gray-400 rounded bg-gray-200 text-black">
+          <h3 className="text-lg font-bold mb-2">Select Columns to Display:</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {tableHeaders[selectedCategory].map((col) => (
+              <label key={col} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={selectedColumns.includes(col)}
+                  onChange={() => handleColumnSelection(col)}
+                />
+                <span>{col}</span>
+              </label>
+            ))}
           </div>
+        </div>
+      )}
+      <div className="w-[80vw] mx-auto flex gap-4 items-center">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => {
+            setStartDate(e.target.value);
+            applyFilters();
+          }}
+          className="p-2 border text-black"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => {
+            setEndDate(e.target.value);
+            applyFilters();
+          }}
+          className="p-2 border text-black"
+        />
+
+        <button
+          onClick={applyFilters}
+          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded"
+        >
+          Apply Filters
+        </button>
+        <button
+          onClick={downloadExcel}
+          className="px-4 py-2 bg-green-500 text-white font-semibold rounded"
+        >
+          Download Excel
+        </button>
+      </div>
+      <div className="w-[80vw] m-auto mt-8">
+        {selectedCategory && (
+          <table className="w-full text-center mt-4 bg-white text-[#75161C] border-collapse">
+            <thead>
+              <tr>
+                {selectedColumns.map((col) => (
+                  <th key={col} className="px-4 py-2 border">
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.map((row, index) => (
+                <tr key={index}>
+                  {selectedColumns.map((col) => (
+                    <td key={col} className="px-4 py-2 border">
+                      {row[col]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>
