@@ -3,121 +3,70 @@ package CMSAIML.example.CMSAIML.Entity;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "student")
+@Table(name = "STUDENT")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("ID")
     private Long id;
 
+    @JsonProperty("NAME")
+    @Column(name = "NAME")
     private String name;
+
+    @JsonProperty("EMAIL")
+    @Column(name = "EMAIL")
     private String email;
+
+    @JsonProperty("YEAR")
+    @Column(name = "YEAR")
     private int year;
 
-    public String getBranch() {
-        return branch;
-    }
+    @JsonProperty("COURSE")
+    @Column(name = "COURSE")
+    private String course;
 
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
-    public Double getCgpa() {
-        return cgpa;
-    }
-
-    public void setCgpa(Double cgpa) {
-        this.cgpa = cgpa;
-    }
-
-    private Double cgpa;
+    @JsonProperty("BRANCH")
+    @Column(name = "BRANCH")
     private String branch;
 
-    private String course;
+    @JsonProperty("CGPA")
+    @Column(name = "CGPA")
+    private Double cgpa;
+
+    @JsonProperty("DATE OF BIRTH")
+    @Column(name = "DATE_OF_BIRTH")
+    private LocalDate dateOfBirth;
+
+    @JsonProperty("GENDER")
+    @Column(name = "GENDER")
+    private String gender;
+
+    @JsonProperty("YEAR OF ADMISSION")
+    @Column(name = "YEAR_OF_ADMISSION")
+    private int yearOfAdmission;
+
+    @JsonProperty("YEAR OF GRADUATION")
+    @Column(name = "YEAR_OF_GRADUATION")
+    private int yearOfGraduation;
+
+    @JsonProperty("STATUS")
+    @Column(name = "STATUS")
+    private String status;
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<Placement> placements;
-
-    // No-argument constructor
-    public Student() {}
-
-    public Student(Long id, String name, String email, int year, String course, String branch, Double cgpa) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.year = year;
-        this.course = course;
-        this.branch = branch;
-        this.cgpa = cgpa;
-    }
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-    // Getter and Setter for course
-    public String getCourse() {
-        return course;
-    }
-
-    public void setCourse(String course) {
-        this.course = course;
-    }
-
-    public List<Placement> getPlacements() {
-        return placements;
-    }
-
-    public void setPlacements(List<Placement> placements) {
-        this.placements = placements;
-    }
-
-
-    // toString method
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", year=" + year +
-                ", course='" + course + '\'' +
-                ", branch=" + branch +
-                ", cgpa=" + cgpa +
-                '}';
-    }
-
 }

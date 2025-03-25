@@ -2,27 +2,42 @@ package CMSAIML.example.CMSAIML.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "faculty_award") // Explicit table name
+@Table(name = "FACULTY_AWARD")
 @Data
 public class FacultyAward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("ID")
     private Long id;
 
+    @JsonProperty("FACULTY NAME")
+    private String facultyName;
 
-    private String faculty_name;
+    @JsonProperty("AWARD NAME")
+    private String awardName;
 
+    @JsonProperty("AWARDED BY")
+    private String awardedBy;
 
-    private String award_name;
+    @JsonProperty("AWARD DATE")
+    private LocalDate awardDate;
 
+    @JsonProperty("CATEGORY")
+    private String category;
 
-    private String awarded_by;
+    @JsonProperty("RECOGNITION TYPE")
+    private String recognitionType;
 
+    @JsonProperty("EVENT NAME")
+    private String eventName;
 
-    private LocalDate award_date;
+    @JsonProperty("DESCRIPTION")
+    private String description;
 
-
+    @JsonProperty("CERTIFICATE LINK")
+    private String certificateLink;
 }

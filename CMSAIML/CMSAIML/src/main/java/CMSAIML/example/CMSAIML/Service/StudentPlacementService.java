@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StudentPlacementService  {
+public class StudentPlacementService {
 
     @Autowired
     private StudentPlacementRepository studentPlacementRepository;
@@ -28,11 +28,12 @@ public class StudentPlacementService  {
     public StudentPlacement updatePlacement(Long id, StudentPlacement placementDetails) {
         StudentPlacement placement = studentPlacementRepository.findById(id).orElse(null);
         if (placement != null) {
-            placement.setStudent_name(placementDetails.getStudent_name());
-            placement.setCompany_name(placementDetails.getCompany_name());
-            placement.setPackage(placementDetails.getPackage());
-            placement.setJoining_date(placementDetails.getJoining_date());
-            placement.setOffer_letter_link(placementDetails.getOffer_letter_link());
+            // Use camelCase for setter methods if fields are camelCase in the entity
+            placement.setStudentName(placementDetails.getStudentName());
+            placement.setCompanyName(placementDetails.getCompanyName());
+            placement.setPackageAmount(placementDetails.getPackageAmount());
+            placement.setJoiningDate(placementDetails.getJoiningDate());
+            placement.setOfferLetterLink(placementDetails.getOfferLetterLink());
             return studentPlacementRepository.save(placement);
         }
         return null;
