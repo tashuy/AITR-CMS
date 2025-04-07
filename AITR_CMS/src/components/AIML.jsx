@@ -53,13 +53,24 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
               />
             </td>
             {columns.map((col, cellIndex) => (
-              <td
-                key={cellIndex}
-                className="px-4 py-2 border-r-2 border-[#75161C]"
-              >
-                {row[col]}
+              <td key={cellIndex} className="px-4 py-2 border-r-2 border-[#75161C]">
+                {col === "CERTIFICATE LINK" && row[col] ? (
+                  <a
+                    href={row[col]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={`Certificate_${row["STUDENT NAME"]}.pdf`}
+                    className="text-blue-500 underline"
+                  >
+                    Download PDF
+                  </a>
+                ) : (
+                  row[col]
+                )}
+
               </td>
             ))}
+
           </tr>
         ))}
       </tbody>
@@ -92,10 +103,10 @@ const AIML = () => {
 
   const tableHeaders = {
     Students: ["ID", "NAME", "EMAIL", "YEAR",
-       "COURSE", "BRANCH", "CGPA", "DATE OF BIRTH",
-        "GENDER", "YEAR OF ADMISSION", "YEAR OF GRADUATION", 
-        "STATUS"]
-    , 
+      "COURSE", "BRANCH", "CGPA", "DATE OF BIRTH",
+      "GENDER", "YEAR OF ADMISSION", "YEAR OF GRADUATION",
+      "STATUS"]
+    ,
     Certificate: [
       "STUDENT NAME",
       "ENROLLMENT NUMBER",
@@ -146,32 +157,32 @@ const AIML = () => {
       "COMPANY LOCATION",
       "INTERVIEW MODE",
     ],
-    Internship: 
-    [
-      "ID",
-      "STUDENT NAME",
-      "ENROLLMENT NUMBER",
-      "COMPANY NAME",
-      "ROLE",
-      "INTERNSHIP TYPE",
-      "STIPEND",
-      "DURATION",
-      "DEPARTMENT",
-      "MENTOR NAME",
-      "MENTOR EMAIL",
-      "TECHNOLOGIES USED",
-      "PROJECT NAME",
-      "PROJECT DESCRIPTION",
-      "SKILLS GAINED",
-      "COMPANY LOCATION",
-      "INTERNSHIP STATUS",
-      "START DATE",
-      "END DATE",
-      "OFFER LETTER LINK",
-      "EXPERIENCE LETTER LINK",
-      "CERTIFICATE LINK"
-  ],
-  
+    Internship:
+      [
+        "ID",
+        "STUDENT NAME",
+        "ENROLLMENT NUMBER",
+        "COMPANY NAME",
+        "ROLE",
+        "INTERNSHIP TYPE",
+        "STIPEND",
+        "DURATION",
+        "DEPARTMENT",
+        "MENTOR NAME",
+        "MENTOR EMAIL",
+        "TECHNOLOGIES USED",
+        "PROJECT NAME",
+        "PROJECT DESCRIPTION",
+        "SKILLS GAINED",
+        "COMPANY LOCATION",
+        "INTERNSHIP STATUS",
+        "START DATE",
+        "END DATE",
+        "OFFER LETTER LINK",
+        "EXPERIENCE LETTER LINK",
+        "CERTIFICATE LINK"
+      ],
+
     ResearchPaper: [
       "student_name",
       "title",
@@ -278,14 +289,14 @@ const AIML = () => {
 
       filtered = filtered.filter((item) => {
         const dateFields = [
-          "YEAR OF ADMISSION", 
+          "YEAR OF ADMISSION",
           "YEAR OF GRADUATION",
           "DATE OF BIRTH",
           "ISSUE DATE",
           "DATE",
           "JOINING DATE",
           "START DATE",
-           "END DATE",
+          "END DATE",
           "publication_date",
           "EVENT DATE",
         ];

@@ -2,6 +2,7 @@ package CMSAIML.example.CMSAIML.Controller;
 
 import CMSAIML.example.CMSAIML.Entity.*;
 import CMSAIML.example.CMSAIML.Service.AdminService;
+import CMSAIML.example.CMSAIML.Service.FacultyAwardService;
 import CMSAIML.example.CMSAIML.dto.FacultyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,11 @@ public class AdminController {
             Faculty faculty = new Faculty();
             faculty.setName(facultyDTO.getName());
             faculty.setEmail(facultyDTO.getEmail());
-            faculty.setDepartment(facultyDTO.getDepartment());  // Directly set department
+            faculty.setDepartment(facultyDTO.getDepartment());
+            faculty.setMobile_no(facultyDTO.getMobile_no());
+            faculty.setYears_Of_Experience(facultyDTO.getYears_Of_Experience());
+            faculty.setDesignation(facultyDTO.getDesignation());
+
 
             // Save Faculty entity
             adminService.addFaculty(faculty);
@@ -93,6 +98,7 @@ public class AdminController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
     }
+
 
 
     @PutMapping("/faculty/{id}")
@@ -111,7 +117,28 @@ public class AdminController {
             return ResponseEntity.ok("Faculty deleted successfully");
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+
+    }private final FacultyAwardService facultyAwardService;
+    @GetMapping("/faculty-awards")
+    public List<FacultyAward> getAllAwards() {
+        return facultyAwardService.getAllAwards();
     }
+
+    @PostMapping("/faculty-awards")
+    public FacultyAward addAward(@RequestBody FacultyAward award) {
+        return facultyAwardService.saveAward(award);
+    }
+
+    @PutMapping("/faculty-awards/{id}")
+    public FacultyAward updateAward(@PathVariable Long id, @RequestBody FacultyAward award) {
+        return facultyAwardService.updateAward(id, award);
+    }
+
+    @DeleteMapping("/faculty-awards/{id}")
+    public void deleteAward(@PathVariable Long id) {
+        facultyAwardService.deleteAward(id);
+    }
+
 
     // -------------------- Event Endpoints --------------------
 

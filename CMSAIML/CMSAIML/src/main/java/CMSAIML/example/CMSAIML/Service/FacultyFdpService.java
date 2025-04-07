@@ -25,6 +25,13 @@ public class FacultyFdpService {
         return facultyFdpRepository.save(fdp);
     }
 
+    public FacultyFdp updateFdp(Long id, FacultyFdp updatedFdp) {
+        return facultyFdpRepository.findById(id).map(existing -> {
+            updatedFdp.setId(id);
+            return facultyFdpRepository.save(updatedFdp);
+        }).orElse(null);
+    }
+
     public void deleteFdp(Long id) {
         facultyFdpRepository.deleteById(id);
     }

@@ -56,6 +56,10 @@ public class AdminService {
     public List<Faculty> getAllFaculty() {
         return facultyRepository.findAll();
     }
+    public Faculty getFacultyById(Long id) {
+        return facultyRepository.findById(id).orElse(null);
+    }
+
 
     public Faculty addFaculty(Faculty faculty) {
         return facultyRepository.save(faculty);

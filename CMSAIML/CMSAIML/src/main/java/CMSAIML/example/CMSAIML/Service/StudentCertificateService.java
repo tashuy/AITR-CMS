@@ -25,6 +25,15 @@ public class StudentCertificateService {
         return studentCertificateRepository.save(certificate);
     }
 
+    public StudentCertificate updateCertificate(Long id, StudentCertificate updatedCertificate) {
+        return studentCertificateRepository.findById(id)
+                .map(existing -> {
+                    updatedCertificate.setId(id);
+                    return studentCertificateRepository.save(updatedCertificate);
+                })
+                .orElse(null);
+    }
+
     public void deleteCertificate(Long id) {
         studentCertificateRepository.deleteById(id);
     }

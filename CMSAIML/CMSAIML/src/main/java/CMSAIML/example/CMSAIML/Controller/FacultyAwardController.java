@@ -2,7 +2,7 @@ package CMSAIML.example.CMSAIML.Controller;
 
 import CMSAIML.example.CMSAIML.Entity.FacultyAward;
 import CMSAIML.example.CMSAIML.Service.FacultyAwardService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,32 +11,39 @@ import java.util.List;
 @RequestMapping("/faculty-awards")
 public class FacultyAwardController {
 
-    @Autowired
-    private FacultyAwardService facultyAwardService;
+    private final FacultyAwardService facultyAwardService;
+
+    public FacultyAwardController(FacultyAwardService facultyAwardService) {
+        this.facultyAwardService = facultyAwardService;
+    }
 
     @GetMapping
-    public List<FacultyAward> getAllAwards() {
-        return facultyAwardService.getAllAwards();
+    public ResponseEntity<List<FacultyAward>> getAllAwards() {
+        return ResponseEntity.ok(facultyAwardService.getAllAwards());
     }
 
     @GetMapping("/{id}")
-    public FacultyAward getAwardById(@PathVariable Long id) {
-        return facultyAwardService.getAwardById(id);
+    public ResponseEntity<FacultyAward> getAwardById(@PathVariable Long id) {
+        FacultyAward award = facultyAwardService.getAwardById(id);
+        return award != null ? ResponseEntity.ok(award) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public FacultyAward createAward(@RequestBody FacultyAward award) {
-        return facultyAwardService.saveAward(award);
+    public ResponseEntity<FacultyAward> createAward(@RequestBody FacultyAward award) {
+        FacultyAward savedAward = facultyAwardService.saveAward(award);
+        return ResponseEntity.ok(savedAward);
     }
 
     @PutMapping("/{id}")
-    public FacultyAward updateAward(@PathVariable Long id, @RequestBody FacultyAward award) {
+    public ResponseEntity<FacultyAward> updateAward(@PathVariable Long id, @RequestBody FacultyAward award) {
         award.setId(id);
-        return facultyAwardService.saveAward(award);
+        FacultyAward updatedAward = facultyAwardService.saveAward(award);
+        return ResponseEntity.ok(updatedAward);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAward(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAward(@PathVariable Long id) {
         facultyAwardService.deleteAward(id);
+        return ResponseEntity.noContent().build();
     }
 }

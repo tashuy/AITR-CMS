@@ -21,6 +21,9 @@ const fetchDataFromApi = async (url, method = "GET", data = null) => {
             throw new Error(`Failed with status ${response.status}`);
         }
         console.log(response);
+        const data = await response.json();
+    
+        console.log("API Response:", data);
         return await response.json();
     } catch (error) {
         console.error(`Error: ${error.message}`);

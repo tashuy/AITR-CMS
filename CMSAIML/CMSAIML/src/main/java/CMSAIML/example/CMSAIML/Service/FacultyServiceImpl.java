@@ -33,7 +33,10 @@ public class FacultyServiceImpl implements FacultyService {
         Faculty faculty = new Faculty();
         faculty.setName(facultyDTO.getName());
         faculty.setEmail(facultyDTO.getEmail());
-        faculty.setDepartment(facultyDTO.getDepartment());  // Store department name directly
+        faculty.setDepartment(facultyDTO.getDepartment());
+        faculty.setMobile_no(facultyDTO.getMobile_no());
+        faculty.setYears_Of_Experience(facultyDTO.getYears_Of_Experience());
+        faculty.setDesignation(facultyDTO.getDesignation());
         facultyRepository.save(faculty);
     }
 

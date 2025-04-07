@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/faculty")
-@CrossOrigin(origins = "http://localhost:5174", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class FacultyController {
 
     private final FacultyService facultyService;

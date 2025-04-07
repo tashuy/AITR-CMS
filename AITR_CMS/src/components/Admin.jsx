@@ -27,11 +27,14 @@ const Admin = () => {
         body: JSON.stringify({ username, password }),
         
       });
-
       if (response.ok) {
-        // localStorage.setItem("adminToken", response.data.token);
-
+        const loggedInUsername = username;
+        localStorage.setItem("adminUsername", loggedInUsername); // Save username
+        // localStorage.setItem("isAdmin", "true"); // optional if you want to check later
+      
         navigate("/admindashboard");
+      
+      
       } else {
         setError("Invalid username or password.");
         console.log("Login Response:", response);
