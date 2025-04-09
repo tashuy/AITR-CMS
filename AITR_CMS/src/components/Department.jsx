@@ -1,8 +1,9 @@
 import React from 'react'
+import Institute from './Institute'
 
 const department = () => {
   return (
-    <div className='text-2xl text-black'>department</div>
+    <Institute/>
   )
 }
 

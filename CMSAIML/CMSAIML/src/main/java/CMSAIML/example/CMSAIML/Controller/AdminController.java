@@ -1,14 +1,17 @@
 package CMSAIML.example.CMSAIML.Controller;
 
 import CMSAIML.example.CMSAIML.Entity.*;
-import CMSAIML.example.CMSAIML.Service.AdminService;
-import CMSAIML.example.CMSAIML.Service.FacultyAwardService;
+import CMSAIML.example.CMSAIML.Service.*;
 import CMSAIML.example.CMSAIML.dto.FacultyDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -137,6 +140,82 @@ public class AdminController {
     @DeleteMapping("/faculty-awards/{id}")
     public void deleteAward(@PathVariable Long id) {
         facultyAwardService.deleteAward(id);
+    }
+    private final FacultyFdpService facultyFdpService;
+
+// -------------------- Faculty FDP Endpoints --------------------
+// FDP (Faculty Development Program) endpoints
+@GetMapping("/faculty-fdp")
+public List<FacultyFdp> getAllFdp() {
+    return facultyFdpService.getAllFdps();
+}
+
+    @PostMapping("/faculty-fdp")
+    public FacultyFdp addFdp(@RequestBody FacultyFdp fdp) {
+        return facultyFdpService.saveFdp(fdp);
+    }
+
+    @PutMapping("/faculty-fdp/{id}")
+    public FacultyFdp updateFdp(@PathVariable Long id, @RequestBody FacultyFdp fdp) {
+        return facultyFdpService.updateFdp(id, fdp);
+    }
+
+    @DeleteMapping("/faculty-fdp/{id}")
+    public void deleteFdp(@PathVariable Long id) {
+        facultyFdpService.deleteFdp(id);
+    }
+
+    private final StudentSportsService studentSportsService;
+    @PostMapping("/student-sports")
+    public ResponseEntity<StudentSports> uploadStudentSports(
+            @RequestPart("sports") StudentSports sports,
+            @RequestPart(value = "certificate", required = false) MultipartFile certificate) throws IOException {
+
+        if (certificate != null && !certificate.isEmpty()) {
+            sports.setCertificate(certificate.getBytes());
+        }
+
+        return ResponseEntity.ok(studentSportsService.saveSports(sports));
+    }
+
+    @GetMapping("/student-sports/{id}/certificate")
+    public ResponseEntity<byte[]> downloadCertificate(@PathVariable Long id) {
+        StudentSports sports = studentSportsService.getSportsById(id);
+        if (sports != null && sports.getCertificate() != null) {
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=certificate.pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(sports.getCertificate());
+        }
+        return ResponseEntity.notFound().build();
+    }
+    @GetMapping("/student-sports")
+    public List<StudentSports> getAllSports() {
+        return studentSportsService.getAllSports();
+    }
+
+    @PutMapping("/student-sports/{id}")
+    public StudentSports updateStudentSports(@PathVariable Long id, @RequestBody StudentSports sports) {
+        sports.setId(id);
+        return studentSportsService.saveSports(sports);
+    }
+
+    @DeleteMapping("/student-sports/{id}")
+    public void deleteStudentSports(@PathVariable Long id) {
+        studentSportsService.deleteSports(id);
+    }
+
+    private final StudentPlacementService studentPlacementService;
+    @PostMapping("/student-placement")
+    public ResponseEntity<StudentPlacement> uploadStudentPlacement(
+            @RequestPart("placement") StudentPlacement placement,
+            @RequestPart(value = "offerLetter", required = false) MultipartFile offerLetter) throws IOException {
+
+        if (offerLetter != null && !offerLetter.isEmpty()) {
+            placement.setOfferLetterPdf(offerLetter.getBytes());
+        }
+
+        return ResponseEntity.ok(studentPlacementService.createPlacement(placement));
     }
 
 

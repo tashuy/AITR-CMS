@@ -3,11 +3,9 @@ package CMSAIML.example.CMSAIML.Service;
 import CMSAIML.example.CMSAIML.Entity.Admin;
 import CMSAIML.example.CMSAIML.Entity.Student;
 import CMSAIML.example.CMSAIML.Entity.Faculty;
-import CMSAIML.example.CMSAIML.Entity.Event;
 import CMSAIML.example.CMSAIML.repository.AdminRepository;
 import CMSAIML.example.CMSAIML.repository.StudentRepository;
 import CMSAIML.example.CMSAIML.repository.FacultyRepository;
-import CMSAIML.example.CMSAIML.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
-    private final EventRepository eventRepository;
+
 
     // -------------------- Admin Authentication --------------------
     public Optional<Admin> authenticateAdmin(String username, String password) {
@@ -56,6 +54,7 @@ public class AdminService {
     public List<Faculty> getAllFaculty() {
         return facultyRepository.findAll();
     }
+
     public Faculty getFacultyById(Long id) {
         return facultyRepository.findById(id).orElse(null);
     }
@@ -74,21 +73,4 @@ public class AdminService {
         facultyRepository.deleteById(id);
     }
 
-    // -------------------- Event Methods --------------------
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
-    }
-
-    public Event addEvent(Event event) {
-        return eventRepository.save(event);
-    }
-
-    public Event updateEvent(Long id, Event event) {
-        event.setId(id);
-        return eventRepository.save(event);
-    }
-
-    public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
-    }
 }

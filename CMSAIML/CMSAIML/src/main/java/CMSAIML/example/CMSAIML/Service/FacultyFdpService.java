@@ -2,16 +2,16 @@ package CMSAIML.example.CMSAIML.Service;
 
 import CMSAIML.example.CMSAIML.Entity.FacultyFdp;
 import CMSAIML.example.CMSAIML.repository.FacultyFdpRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FacultyFdpService {
 
-    @Autowired
-    private FacultyFdpRepository facultyFdpRepository;
+    private final FacultyFdpRepository facultyFdpRepository;
 
     public List<FacultyFdp> getAllFdps() {
         return facultyFdpRepository.findAll();

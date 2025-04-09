@@ -33,7 +33,8 @@ public class StudentPlacementService {
             placement.setCompanyName(placementDetails.getCompanyName());
             placement.setPackageAmount(placementDetails.getPackageAmount());
             placement.setJoiningDate(placementDetails.getJoiningDate());
-            placement.setOfferLetterLink(placementDetails.getOfferLetterLink());
+            placement.setOfferLetterPdf(placementDetails.getOfferLetterPdf());
+
             return studentPlacementRepository.save(placement);
         }
         return null;
