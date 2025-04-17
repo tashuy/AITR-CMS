@@ -2,16 +2,18 @@ package CMSAIML.example.CMSAIML.Service;
 
 import CMSAIML.example.CMSAIML.Entity.FacultyPatent;
 import CMSAIML.example.CMSAIML.repository.FacultyPatentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FacultyPatentService {
 
-    @Autowired
-    private FacultyPatentRepository facultyPatentRepository;
+    private final FacultyPatentRepository facultyPatentRepository;
 
     public List<FacultyPatent> getAllPatents() {
         return facultyPatentRepository.findAll();
@@ -25,7 +27,23 @@ public class FacultyPatentService {
         return facultyPatentRepository.save(patent);
     }
 
-    public void deletePatent(Long id) {
-        facultyPatentRepository.deleteById(id);
+    public FacultyPatent savePatentWithPdf(FacultyPatent patent, MultipartFile pdfFile) throws IOException {
+        if (pdfFile != null && !pdfFile.isEmpty()) {
+            patent.setCertificatePdf(pdfFile.getBytes());
+        }
+        return facultyPatentRepository.save(patent);
+    }
+
+    public boolean deletePatent(Long id) {
+        if (facultyPatentRepository.existsById(id)) {
+            facultyPatentRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    public byte[] getCertificatePdf(Long id) {
+        FacultyPatent patent = getPatentById(id);
+        return patent != null ? patent.getCertificatePdf() : null;
     }
 }

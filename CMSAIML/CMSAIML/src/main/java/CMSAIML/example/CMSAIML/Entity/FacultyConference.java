@@ -1,22 +1,18 @@
 package CMSAIML.example.CMSAIML.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Data
+@Table(name = "faculty_conference")
 public class FacultyConference {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     private String facultyName;
-
 
     private String conferenceName;
 
@@ -28,20 +24,17 @@ public class FacultyConference {
 
     private String conferenceLocation;
 
-
     private String conferenceMode;
 
-
     private String publicationStatus;
-
 
     private String journalName;
 
     private String issnNumber;
 
-
     private String indexing;
 
-
-    private String certificateLink;
+    @Lob
+    @Column(name = "certificate_pdf", columnDefinition = "LONGBLOB")
+    private byte[] certificatePdf;
 }

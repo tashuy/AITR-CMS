@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Data;
 
 @Entity
@@ -31,5 +32,6 @@ public class FacultyFdp {
 
     private int durationDays;
 
-    private String certificateLink;
+    @Lob
+    private byte[] certificatePdf;  // Replaces certificateLink with actual PDF binary
 }

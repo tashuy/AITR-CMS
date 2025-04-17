@@ -3,13 +3,13 @@ package CMSAIML.example.CMSAIML.Service;
 import CMSAIML.example.CMSAIML.Entity.FacultyAward;
 import CMSAIML.example.CMSAIML.repository.FacultyAwardRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Service class for managing Faculty Awards.
- */
 @Service
 public class FacultyAwardService {
 
@@ -19,42 +19,53 @@ public class FacultyAwardService {
         this.facultyAwardRepository = facultyAwardRepository;
     }
 
-    /**
-     * Retrieves all faculty awards.
-     */
     public List<FacultyAward> getAllAwards() {
         return facultyAwardRepository.findAll();
     }
 
-    /**
-     * Retrieves a specific faculty award by ID.
-     */
     public FacultyAward getAwardById(Long id) {
         return facultyAwardRepository.findById(id).orElse(null);
     }
 
-    /**
-     * Saves or creates a new faculty award.
-     */
     public FacultyAward saveAward(FacultyAward award) {
         return facultyAwardRepository.save(award);
     }
 
-    /**
-     * Updates an existing faculty award by ID.
-     */
+    // ✅ New method to handle form + file upload
+    public FacultyAward saveAward(
+            String facultyName,
+            String awardName,
+            String awardedBy,
+            LocalDate awardDate,
+            String category,
+            String recognitionType,
+            String eventName,
+            String description,
+            MultipartFile certificatePdf
+    ) throws IOException {
+        FacultyAward award = new FacultyAward();
+        award.setFacultyName(facultyName);
+        award.setAwardName(awardName);
+        award.setAwardedBy(awardedBy);
+        award.setAwardDate(awardDate);
+        award.setCategory(category);
+        award.setRecognitionType(recognitionType);
+        award.setEventName(eventName);
+        award.setDescription(description);
+        award.setCertificatePdf(certificatePdf.getBytes());
+
+        return facultyAwardRepository.save(award);
+    }
+
     public FacultyAward updateAward(Long id, FacultyAward updatedAward) {
         Optional<FacultyAward> existing = facultyAwardRepository.findById(id);
         if (existing.isPresent()) {
             updatedAward.setId(id); // Ensure correct ID
             return facultyAwardRepository.save(updatedAward);
         }
-        return null; // Or throw exception if you prefer
+        return null;
     }
 
-    /**
-     * Deletes a faculty award by ID.
-     */
     public void deleteAward(Long id) {
         facultyAwardRepository.deleteById(id);
     }

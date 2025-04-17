@@ -37,5 +37,7 @@ public class StudentCertificate {
 
     private Integer verified;
 
-    private String certificateLink;
+    @Lob
+    @Column(name = "certificate_pdf")
+    private byte[] certificatePdf;
 }

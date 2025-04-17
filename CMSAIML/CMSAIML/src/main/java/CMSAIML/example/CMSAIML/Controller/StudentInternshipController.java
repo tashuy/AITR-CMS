@@ -1,11 +1,12 @@
 package CMSAIML.example.CMSAIML.Controller;
 
-
 import CMSAIML.example.CMSAIML.Entity.StudentInternship;
 import CMSAIML.example.CMSAIML.Service.StudentInternshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,14 +26,35 @@ public class StudentInternshipController {
         return studentInternshipService.getInternshipById(id);
     }
 
-    @PostMapping
-    public StudentInternship addInternship(@RequestBody StudentInternship internship) {
+    @PostMapping(consumes = "multipart/form-data")
+    public StudentInternship addInternship(
+            @RequestPart("internship") StudentInternship internship,
+            @RequestPart(value = "offerLetterPdf", required = false) MultipartFile offerLetterPdf,
+            @RequestPart(value = "experienceLetterPdf", required = false) MultipartFile experienceLetterPdf,
+            @RequestPart(value = "certificatePdf", required = false) MultipartFile certificatePdf
+    ) throws IOException {
+
+        if (offerLetterPdf != null) internship.setOfferLetterPdf(offerLetterPdf.getBytes());
+        if (experienceLetterPdf != null) internship.setExperienceLetterPdf(experienceLetterPdf.getBytes());
+        if (certificatePdf != null) internship.setCertificatePdf(certificatePdf.getBytes());
+
         return studentInternshipService.saveInternship(internship);
     }
 
-    @PutMapping("/{id}")
-    public StudentInternship updateInternship(@PathVariable Long id, @RequestBody StudentInternship internship) {
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    public StudentInternship updateInternship(
+            @PathVariable Long id,
+            @RequestPart("internship") StudentInternship internship,
+            @RequestPart(value = "offerLetterPdf", required = false) MultipartFile offerLetterPdf,
+            @RequestPart(value = "experienceLetterPdf", required = false) MultipartFile experienceLetterPdf,
+            @RequestPart(value = "certificatePdf", required = false) MultipartFile certificatePdf
+    ) throws IOException {
+
         internship.setId(id);
+        if (offerLetterPdf != null) internship.setOfferLetterPdf(offerLetterPdf.getBytes());
+        if (experienceLetterPdf != null) internship.setExperienceLetterPdf(experienceLetterPdf.getBytes());
+        if (certificatePdf != null) internship.setCertificatePdf(certificatePdf.getBytes());
+
         return studentInternshipService.saveInternship(internship);
     }
 

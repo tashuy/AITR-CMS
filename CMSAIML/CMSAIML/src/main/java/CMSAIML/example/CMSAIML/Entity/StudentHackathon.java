@@ -30,5 +30,8 @@ public class StudentHackathon {
     private String projectGithubLink;
     private String projectDescription;
     private String certificateStatus;
-    private String certificateLink;
+    @Lob
+    @Column(name = "certificate_pdf")
+    private byte[] certificatePdf;
+
 }

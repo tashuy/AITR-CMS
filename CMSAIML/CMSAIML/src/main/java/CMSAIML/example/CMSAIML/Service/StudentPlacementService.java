@@ -39,6 +39,11 @@ public class StudentPlacementService {
         }
         return null;
     }
+    public byte[] getOfferLetterPdf(Long id) {
+        StudentPlacement placement = studentPlacementRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Placement not found with ID: " + id));
+        return placement.getOfferLetterPdf();
+    }
 
     public void deletePlacement(Long id) {
         studentPlacementRepository.deleteById(id);

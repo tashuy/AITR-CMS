@@ -1,12 +1,90 @@
-import React, { useState } from "react";
+// Assuming you have already added the following API functions somewhere:
+// import {
+//   fetchMouCollabData,
+//   fetchMouEventData,
+//   fetchMouOthersData,
+//   fetchAchievementData,
+// } from "../api/mouApis";
+
+import React, { useState, useEffect } from "react";
 import AIMLBG from "./img/AIML_IMG.webp";
+
 
 const Institute = () => {
   const [showSubTabs, setShowSubTabs] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState("Collab");
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const subTabs = ["Collab", "Achievement", "Event", "Others"];
 
+  useEffect(() => {
+    if (showSubTabs) fetchData(activeSubTab);
+  }, [activeSubTab, showSubTabs]);
+
+  const fetchData = async (tab) => {
+    setLoading(true);
+    try {
+      let data = [];
+      if (tab === "Collab") data = await fetchMouCollabData();
+      else if (tab === "Achievement") data = await fetchAchievementData();
+      else if (tab === "Event") data = await fetchMouEventData();
+      else if (tab === "Others") data = await fetchMouOthersData();
+      setTableData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setTableData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const tableHeaders = {
+    Collab: [
+      "id",
+      "instituteName",
+      "collabType",
+      "startDate",
+      "endDate",
+      "objective",
+      "activitiesConducted",
+      "outcomes",
+      "documentProofPdf"
+    ],
+    Achievement: [
+      "id",
+      "instituteName",
+      "achievementTitle",
+      "achievementDate",
+      "achievementLevel",
+      "organizedBy",
+      "category",
+      "description",
+      "certificatePdf"
+    ],
+    Event: [
+      "id",
+      "eventName",
+      "eventType",
+      "startDate",
+      "endDate",
+      "location",
+      "description",
+      "organizer",
+      "participantsCount",
+      "eventReportPdf"
+    ],
+    Others: [
+      "id",
+      "activityName",
+      "instituteName",
+      "activityType",
+      "date",
+      "description",
+      "remarks",
+      "supportingDocPdf"
+    ]
+  };
+  
   return (
     <div className="w-full h-full bg-white">
       {/* Header */}
@@ -33,7 +111,7 @@ const Institute = () => {
         </button>
       </div>
 
-      {/* Show Filters & Sub-tabs if MOU clicked */}
+      {/* Filters and Sub-tabs */}
       {showSubTabs && (
         <>
           {/* Filters */}
@@ -100,12 +178,40 @@ const Institute = () => {
             </div>
           </div>
 
-          {/* Sub-tab Content */}
+          {/* Data Table Section */}
           <div className="mt-10 w-[80vw] mx-auto">
             <h2 className="text-4xl font-extrabold text-[#00062B] mb-6">
-              {activeSubTab} (0 results)
+              {activeSubTab} ({tableData.length} results)
             </h2>
-            <p className="text-gray-500">Table will be shown here.</p>
+
+            {loading ? (
+              <p className="text-gray-500">Loading...</p>
+            ) : (
+              tableData.length > 0 ? (
+                <table className="w-full table-auto border border-gray-400">
+                  <thead>
+                    <tr className="bg-gray-300">
+                      {Object.keys(tableData[0]).map((key) => (
+                        <th key={key} className="border p-2 text-left capitalize">
+                          {key.replace(/([A-Z])/g, ' $1')}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tableData.map((item, index) => (
+                      <tr key={index} className="border-t">
+                        {Object.values(item).map((val, idx) => (
+                          <td key={idx} className="border p-2">{val}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-gray-500">No data available.</p>
+              )
+            )}
 
             <button className="mt-4 px-6 py-2 bg-green-600 text-white font-semibold rounded">
               Download Data

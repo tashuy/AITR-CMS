@@ -2,7 +2,7 @@ import { API_BASE_URL } from "./config";
 
 
 // Reusable Fetch Function
-const fetchDataFromApi = async (url, method = "GET", data = null) => {
+const fetchDataFromApi = async (url, method = "GET", requestedData = null) => {
     try {
         const options = {
             method,
@@ -11,8 +11,8 @@ const fetchDataFromApi = async (url, method = "GET", data = null) => {
             },
         };
 
-        if (data) {
-            options.body = JSON.stringify(data);
+        if (requestedData) {
+            options.body = JSON.stringify(requestedData);
         }
 
         const response = await fetch(`${API_BASE_URL}${url}`, options);
@@ -20,11 +20,11 @@ const fetchDataFromApi = async (url, method = "GET", data = null) => {
         if (!response.ok) {
             throw new Error(`Failed with status ${response.status}`);
         }
-        console.log(response);
-        const data = await response.json();
+        // console.log(response);
+        const responseData = await response.json();
     
-        console.log("API Response:", data);
-        return await response.json();
+        console.log("API Response:", responseData);
+        return responseData;
     } catch (error) {
         console.error(`Error: ${error.message}`);
         throw error;
@@ -129,6 +129,34 @@ export const fetchFacultyresearchpapersData = async () => fetchDataFromApi('/fac
 export const sendFacultyresearchpapersData = async (data) => fetchDataFromApi('/faculty-research-papers', "POST", data);
 export const updateFacultyresearchpapersData = async (data) => fetchDataFromApi('/faculty-research-papers', "PUT", data);
 export const deleteFacultyresearchpapersData = async (data) => fetchDataFromApi('/faculty-research-papers', "DELETE", data);
+
+
+
+
+
+// MOU Event API
+export const fetchMouEventData = async () => fetchDataFromApi('/mou-event');
+export const sendMouEventData = async (data) => fetchDataFromApi('/mou-event', "POST", data);
+export const updateMouEventData = async (data) => fetchDataFromApi('/mou-event', "PUT", data);
+export const deleteMouEventData = async (data) => fetchDataFromApi('/mou-event', "DELETE", data);
+
+// MOU Collaboration API
+export const fetchMouCollabData = async () => fetchDataFromApi('/mou-collab');
+export const sendMouCollabData = async (data) => fetchDataFromApi('/mou-collab', "POST", data);
+export const updateMouCollabData = async (data) => fetchDataFromApi('/mou-collab', "PUT", data);
+export const deleteMouCollabData = async (data) => fetchDataFromApi('/mou-collab', "DELETE", data);
+
+// MOU Others API
+export const fetchMouOthersData = async () => fetchDataFromApi('/mou-others');
+export const sendMouOthersData = async (data) => fetchDataFromApi('/mou-others', "POST", data);
+export const updateMouOthersData = async (data) => fetchDataFromApi('/mou-others', "PUT", data);
+export const deleteMouOthersData = async (data) => fetchDataFromApi('/mou-others', "DELETE", data);
+
+// Achievement API
+export const fetchAchievementData = async () => fetchDataFromApi('/achievement');
+export const sendAchievementData = async (data) => fetchDataFromApi('/achievement', "POST", data);
+export const updateAchievementData = async (data) => fetchDataFromApi('/achievement', "PUT", data);
+export const deleteAchievementData = async (data) => fetchDataFromApi('/achievement', "DELETE", data);
 
 
 

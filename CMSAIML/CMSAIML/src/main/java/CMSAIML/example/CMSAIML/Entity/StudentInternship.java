@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 @Table(name = "student_internship")
 public class StudentInternship {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,7 +37,12 @@ public class StudentInternship {
     @Temporal(TemporalType.DATE)
     private Date endDate;
 
-    private String offerLetterLink;
-    private String experienceLetterLink;
-    private String certificateLink;
+    @Lob
+    private byte[] offerLetterPdf;
+
+    @Lob
+    private byte[] experienceLetterPdf;
+
+    @Lob
+    private byte[] certificatePdf;
 }

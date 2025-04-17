@@ -4,7 +4,9 @@ import CMSAIML.example.CMSAIML.Entity.StudentCertificate;
 import CMSAIML.example.CMSAIML.Service.StudentCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,13 +27,22 @@ public class StudentCertificateController {
     }
 
     @PostMapping
-    public StudentCertificate addCertificate(@RequestBody StudentCertificate certificate) {
+    public StudentCertificate addCertificate(
+            @RequestPart("certificate") StudentCertificate certificate,
+            @RequestPart("pdf") MultipartFile pdfFile
+    ) throws IOException {
+        certificate.setCertificatePdf(pdfFile.getBytes());
         return studentCertificateService.saveCertificate(certificate);
     }
 
     @PutMapping("/{id}")
-    public StudentCertificate updateCertificate(@PathVariable Long id, @RequestBody StudentCertificate certificate) {
+    public StudentCertificate updateCertificate(
+            @PathVariable Long id,
+            @RequestPart("certificate") StudentCertificate certificate,
+            @RequestPart("pdf") MultipartFile pdfFile
+    ) throws IOException {
         certificate.setId(id);
+        certificate.setCertificatePdf(pdfFile.getBytes());
         return studentCertificateService.saveCertificate(certificate);
     }
 

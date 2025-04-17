@@ -23,7 +23,7 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
   };
 
   return (
-    <table className="w-full text-center mt-4 bg-white  text-[#75161C] border-collapse">
+    <table className="w-full text-center mt-4 bg-white text-[#75161C] border-collapse">
       <thead>
         <tr className="border-b-2 border-l-2 border-[#75161C] text-black">
           <th className="px-4 py-2 border-r-2 border-t-2 border-[#75161C]">
@@ -53,13 +53,16 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
               />
             </td>
             {columns.map((col, cellIndex) => (
-              <td key={cellIndex} className="px-4 py-2 border-r-2 border-[#75161C]">
-                {col === "CERTIFICATE LINK" && row[col] ? (
+              <td
+                key={cellIndex}
+                className="px-4 py-2 border-r-2 border-[#75161C]"
+              >
+                {col.toLowerCase().includes("pdf") && row[col] ? (
                   <a
                     href={row[col]}
                     target="_blank"
                     rel="noopener noreferrer"
-                    download={`Certificate_${row["STUDENT NAME"]}.pdf`}
+                    download={`Certificate_${row["studentName"] || "file"}.pdf`}
                     className="text-blue-500 underline"
                   >
                     Download PDF
@@ -67,7 +70,6 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
                 ) : (
                   row[col]
                 )}
-
               </td>
             ))}
 
@@ -75,9 +77,9 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
         ))}
       </tbody>
     </table>
+
   );
 };
-
 const AIML = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,7 +92,6 @@ const AIML = () => {
   const [endDate, setEndDate] = useState("");
   const [selectedRows, setSelectedRows] = useState([]); // Store selected rows
   const [selectedColumns, setSelectedColumns] = useState([]); // Store selected columns
-
   const CategoriesDetails = {
     Students: [],
     Certificate: [],
@@ -102,86 +103,86 @@ const AIML = () => {
   };
 
   const tableHeaders = {
-    Students: ["ID", "NAME", "EMAIL", "YEAR",
-      "COURSE", "BRANCH", "CGPA", "DATE OF BIRTH",
-      "GENDER", "YEAR OF ADMISSION", "YEAR OF GRADUATION",
-      "STATUS"]
-    ,
+    Students: [
+      "id",
+      "name",
+      "email",
+      "year",
+      "course",
+      "branch",
+      "cgpa",
+      "dateOfBirth",
+      "gender",
+      "yearOfAdmission",
+      "yearOfGraduation",
+      "status"
+    ],
     Certificate: [
-      "STUDENT NAME",
-      "ENROLLMENT NUMBER",
-      "CERTIFICATE NAME",
-      "CERTIFICATE TYPE",
-      "ISSUED BY",
-      "ISSUE DATE",
-      "VALIDITY PERIOD",
-      "GRADE OR SCORE",
-      "CERTIFICATE DESCRIPTION",
-      "MODE OF TRAINING",
-      "RELATED COURSE OR PROGRAM",
-      "CERTIFICATE STATUS",
-      "VERIFIED",
-      "CERTIFICATE LINK",
+      "id",
+      "studentName",
+      "enrollmentNumber",
+      "certificateName",
+      "certificateType",
+      "issuedBy",
+      "issueDate",
+      "validityPeriod",
+      "gradeOrScore",
+      "certificateDescription",
+      "modeOfTraining",
+      "relatedCourseOrProgram",
+      "certificateStatus",
+      "verified",
+      "certificatePdf"
     ],
+
     Hackathon: [
-      "STUDENT NAME",
-      "ENROLLMENT NUMBER",
-      "EVENT NAME",
-      "DATE",
-      "TEAM NAME",
-      "TEAM SIZE",
-      "MENTOR NAME",
-      "HACKATHON TYPE",
-      "ORGANIZING BODY",
-      "VENUE",
-      "PROBLEM STATEMENT",
-      "TECHNOLOGY USED",
-      "PRIZE MONEY",
-      "SPONSORING COMPANY",
-      "POSITION",
-      "PROJECT GITHUB LINK",
-      "PROJECT DESCRIPTION",
-      "CERTIFICATE STATUS",
-      "CERTIFICATE LINK",
+      "id",
+      "studentName",
+      "enrollmentNumber",
+      "eventName",
+      "date",
+      "teamName",
+      "teamSize",
+      "mentorName",
+      "hackathonType",
+      "organizingBody",
+      "venue",
+      "problemStatement",
+      "technologyUsed",
+      "prizeMoney",
+      "sponsoringCompany",
+      "position",
+      "projectGithubLink",
+      "projectDescription",
+      "certificateStatus",
+      "certificatePdf"
     ],
-    Placement: [
-      "ID",
-      "STUDENT NAME",
-      "COMPANY NAME",
-      "JOB ROLE",
-      "BRANCH",
-      "PLACEMENT TYPE",
-      "PACKAGE AMOUNT",
-      "JOINING DATE",
-      "OFFER LETTER LINK",
-      "COMPANY LOCATION",
-      "INTERVIEW MODE",
+
+    Placement: ["id", "studentName", "companyName", "jobRole", "branch", "placementType", "packageAmount", "joiningDate", "offerLetterPdf", "companyLocation", "interviewMode"],
+
+    Internship: [
+      "id",
+      "studentName",
+      "enrollmentNumber",
+      "companyName",
+      "role",
+      "internshipType",
+      "stipend",
+      "duration",
+      "department",
+      "mentorName",
+      "mentorEmail",
+      "technologiesUsed",
+      "projectName",
+      "projectDescription",
+      "skillsGained",
+      "companyLocation",
+      "internshipStatus",
+      "startDate",
+      "endDate",
+      
+      "certificatePdf"
     ],
-    Internship:
-      [
-        "ID",
-        "STUDENT NAME",
-        "ENROLLMENT NUMBER",
-        "COMPANY NAME",
-        "ROLE",
-        "INTERNSHIP TYPE",
-        "STIPEND",
-        "DURATION",
-        "DEPARTMENT",
-        "MENTOR NAME",
-        "MENTOR EMAIL",
-        "TECHNOLOGIES USED",
-        "PROJECT NAME",
-        "PROJECT DESCRIPTION",
-        "SKILLS GAINED",
-        "COMPANY LOCATION",
-        "INTERNSHIP STATUS",
-        "START DATE",
-        "END DATE",
-        "OFFER LETTER LINK",
-        "EXPERIENCE LETTER LINK",
-        "CERTIFICATE LINK"
-      ],
 
     ResearchPaper: [
       "student_name",
@@ -190,19 +191,8 @@ const AIML = () => {
       "journal_name",
       "co_authors",
     ],
-    Sports: [
-      "ID",
-      "STUDENT NAME",
-      "SPORT NAME",
-      "ACHIEVEMENT",
-      "EVENT DATE",
-      "EVENT NAME",
-      "EVENT LEVEL",
-      "EVENT LOCATION",
-      "POSITION",
-      "CERTIFICATE LINK",
-      "COACH NAME",
-    ],
+    Sports: ["id", "studentName", "sportName", "achievement", "eventDate", "eventName", "eventLevel", "eventLocation", "position", "certificatePdf", "coachName"],
+
   };
 
   useEffect(() => {
@@ -234,6 +224,7 @@ const AIML = () => {
           default:
             break;
         }
+
 
         if (data) {
           setStudentData(data);
@@ -289,17 +280,18 @@ const AIML = () => {
 
       filtered = filtered.filter((item) => {
         const dateFields = [
-          "YEAR OF ADMISSION",
-          "YEAR OF GRADUATION",
-          "DATE OF BIRTH",
-          "ISSUE DATE",
-          "DATE",
-          "JOINING DATE",
-          "START DATE",
-          "END DATE",
+          "yearOfAdmission",
+          "yearOfGraduation",
+          "dateOfBirth",
+          "issueDate",
+          "date",                 // From Hackathon
+          "joiningDate",
+          "startDate",
+          "endDate",
           "publication_date",
-          "EVENT DATE",
+          "eventDate"
         ];
+
 
         return dateFields.some((field) => {
           if (item[field]) {
@@ -339,6 +331,8 @@ const AIML = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, selectedCategory);
     XLSX.writeFile(workbook, `${selectedCategory}_SelectedData.xlsx`);
+
+
   };
 
   return (
@@ -458,9 +452,15 @@ const AIML = () => {
                       );
                     }}
                   />
-                  <span>{col}</span>
+                  <span>
+                    {col
+                      .replace(/_/g, " ")                     // Replace underscores with spaces
+                      .replace(/([a-z])([A-Z])/g, "$1 $2")    // Add space before capital letters
+                      .toUpperCase()}
+                  </span>
                 </label>
               ))}
+
             </div>
           </div>
         )}
@@ -492,6 +492,7 @@ const AIML = () => {
       </div>
     </div>
   );
+
 };
 
 export default AIML;

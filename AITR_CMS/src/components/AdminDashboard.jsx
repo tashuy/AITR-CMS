@@ -174,49 +174,43 @@ const getTableHeaders = () => {
   const tab = subTab || activeTab;
   switch (tab) {
     case "faculty":
-      return ["ID", "NAME", "EMAIL", "DEPARTMENT", "MOBILE NUMBER", "YEARS OF EXPERIENCE", "DESIGNATION", "Actions"];
-    case "student":
-      return ["ID", "Name", "Email", "Year", "CGPA", "Branch", "Course", "Actions"];
-    case "researchpapers":
-      return ["ID", "Faculty Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
-    case "conference":
-      return ["ID", "Faculty Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "ISSN Number", "Indexing", "Certificate Link", "Actions"];
+  return ["Id", "Name", "Email", "Department", "Mobile Number", "Years Of Experience", "Designation", "Actions"];
 
-    case "awards":
-      return [
-        "ID",
-        "Faculty Name",
-        "Award Name",
-        "Awarded By",
-        "Award Date",
-        "Category",
-        "Recognition Type",
-        "Event Name",
-        "Description",
-        "Certificate Link",
-        "Actions"
-      ];
+case "student":
+  return ["Id", "Name", "Email", "Year", "Course", "Branch", "Cgpa", "Date Of Birth", "Gender", "Admission Year", "Year Of Graduation", "Status", "Actions"];
 
-    case "developmentprogram":
-      return ["ID", "FACULTY NAME", "PROGRAM NAME", "ORGANIZED BY", "START DATE", "END DATE", "PROGRAM TYPE", "MODE", "LOCATION", "DURATION DAYS", "CERTIFICATE LINK", "ACTIONS"];
-    case "patents":
-      return ["ID", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate Link", "Actions"];
+case "researchpapers":
+  return ["Id", "Faculty Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
 
-    case "certificate":
-      return ["ID", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate Link", "Actions"];
+case "conference":
+  return ["Id", "Faculty Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "Issn Number", "Indexing", "Certificate Link", "Actions"];
 
+case "awards":
+  return ["Id", "Faculty Name", "Award Name", "Awarded By", "Award Date", "Category", "Recognition Type", "Event Name", "Description", "Certificate Link", "Actions"];
 
-    case "hackathon":
-      return ["ID", "STUDENT NAME", "ENROLLMENT NUMBER", "EVENT NAME", "DATE", "TEAM NAME", "TEAM SIZE", "MENTOR NAME", "HACKATHON TYPE", "ORGANIZING BODY", "VENUE", "PROBLEM STATEMENT", "TECHNOLOGY USED", "PRIZE MONEY", "SPONSORING COMPANY", "POSITION", "PROJECT GITHUB LINK", "PROJECT DESCRIPTION", "CERTIFICATE STATUS", "CERTIFICATE LINK", "ACTIONS"];
+case "developmentprogram":
+  return ["Id", "Faculty Name", "Program Name", "Organized By", "Start Date", "End Date", "Program Type", "Mode", "Location", "Duration Days", "Certificate Link", "Actions"];
 
-    case "placement":
-      return ["ID", "Student Name", "Company Name", "Job Role", "Branch", "Placement Type", "Package", "Joining Date", "Offer Letter PDF", "Company Location", "Interview Mode", "Actions"];
-    case "internship":
-      return ["ID", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate Link", "Actions"];
-    case "researchpaper":
-      return ["ID", "Student Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
-    case "sports":
-      return ["ID", "Student Name", "Sport Name", "Achievement", "Event Date", "Event Name", "Event Level", "Event Location", "Position", "Certificate", "Coach Name", "Actions"];
+case "patents":
+  return ["Id", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate Link", "Actions"];
+
+case "certificate":
+  return ["Id", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate Link", "Actions"];
+
+case "hackathon":
+  return ["Id", "Student Name", "Enrollment Number", "Event Name", "Date", "Team Name", "Team Size", "Mentor Name", "Hackathon Type", "Organizing Body", "Venue", "Problem Statement", "Technology Used", "Prize Money", "Sponsoring Company", "Position", "Project Github Link", "Project Description", "Certificate Status", "Certificate Link", "Actions"];
+
+case "placement":
+  return ["Id", "Student Name", "Company Name", "Job Role", "Branch", "Placement Type", "Package", "Joining Date", "Offer Letter Pdf", "Company Location", "Interview Mode", "Actions"];
+
+case "internship":
+  return ["Id", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate Link", "Actions"];
+
+case "researchpaper":
+  return ["Id", "Student Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
+
+case "sports":
+  return ["Id", "Student Name", "Sport Name", "Achievement", "Event Date", "Event Name", "Event Level", "Event Location", "Position", "Certificate", "Coach Name", "Actions"];
 
     default:
       return [];
@@ -229,22 +223,23 @@ const getTableRowData = (item) => {
   switch (tab) {
     case "faculty":
       return [item.id, item.name, item.email, item.department, item.mobile_no, item.years_Of_Experience, item.designation];
-    case "student":
-      return [item.id, item.name, item.email, item.year, item.cgpa, item.branch, item.course];
+      case "student":
+        return [item.id, item.name, item.email, item.year, item.course, item.branch, item.cgpa, item.dateOfBirth, item.gender, item.yearOfAdmission, item.yearOfGraduation, item.status];
+      
     case "researchpapers":
       return [item.id, item.faculty_name, item.title, item.publication_date, item.journal_name, item.co_authors];
     case "conference":
-      return [item.id, item.facultyName, item.conferenceName, item.paperTitle, item.presentationDate, item.conferenceType, item.conferenceLocation, item.conferenceMode, item.publicationStatus, item.journalName, item.issnNumber, item.indexing, item.certificateLink];
+      return [item.id, item.facultyName, item.conferenceName, item.paperTitle, item.presentationDate, item.conferenceType, item.conferenceLocation, item.conferenceMode, item.publicationStatus, item.journalName, item.issnNumber, item.indexing, item.certificatePdf];
 
     case "awards":
-      return [item.id, item.facultyName, item.awardName, item.awardedBy, item.awardDate, item.category, item.recognitionType, item.eventName, item.description, item.certificateLink];
+      return [item.id, item.facultyName, item.awardName, item.awardedBy, item.awardDate, item.category, item.recognitionType, item.eventName, item.description, item.certificatePdf];
 
     case "developmentprogram":
       return [item.id, item.facultyName, item.programName, item.organizedBy, item.startDate, item.endDate, item.programType, item.mode, item.location, item.durationDays, item.certificateLink];
-    case "patents": return [item.id, item.facultyName, item.patentTitle, item.patentNumber, item.applicationDate, item.status, item.inventorNames, item.patentType, item.patentOffice, item.grantDate, item.expiryDate, item.country, item.patentCategory, item.certificateLink];
+    case "patents": return [item.id, item.facultyName, item.patentTitle, item.patentNumber, item.applicationDate, item.status, item.inventorNames, item.patentType, item.patentOffice, item.grantDate, item.expiryDate, item.country, item.patentCategory, item.certificatePdf];
 
     case "certificate":
-      return [item.id, item.studentName, item.enrollmentNumber, item.certificateName, item.certificateType, item.issuedBy, item.issueDate, item.validityPeriod, item.gradeOrScore, item.certificateDescription, item.modeOfTraining, item.relatedCourseOrProgram, item.certificateStatus, item.verified, item.certificateLink];
+      return [item.id, item.studentName, item.enrollmentNumber, item.certificateName, item.certificateType, item.issuedBy, item.issueDate, item.validityPeriod, item.gradeOrScore, item.certificateDescription, item.modeOfTraining, item.relatedCourseOrProgram, item.certificateStatus, item.verified, item.certificatePdf];
 
     case "hackathon":
       return [item.id, item.studentName, item.enrollmentNumber, item.eventName, item.date, item.teamName, item.teamSize, item.mentorName, item.hackathonType, item.organizingBody, item.venue, item.problemStatement, item.technologyUsed, item.prizeMoney, item.sponsoringCompany, item.position, item.projectGithubLink, item.projectDescription, item.certificateStatus, item.certificateLink];
@@ -252,8 +247,37 @@ const getTableRowData = (item) => {
     case "placement":
       return [item.id, item.studentName, item.companyName, item.jobRole, item.branch, item.placementType, item.packageAmount, item.joiningDate, <a href="/api/student-placement/pdf/${item.id}" target="_blank">View PDF</a>, item.companyLocation, item.interviewMode, "Actions"];
     case "internship":
-      return [item.id, item.studentName, item.enrollmentNumber, item.companyName, item.role, item.internshipType, item.stipend, item.duration, item.department, item.mentorName, item.mentorEmail, item.technologiesUsed, item.projectName, item.projectDescription, item.skillsGained, item.companyLocation, item.internshipStatus, item.startDate, item.endDate, item.offerLetterLink, item.experienceLetterLink, item.certificateLink];
-
+      return [
+        item.id,
+        item.studentName,
+        item.enrollmentNumber,
+        item.companyName,
+        item.role,
+        item.internshipType,
+        item.stipend,
+        item.duration,
+        item.department,
+        item.mentorName,
+        item.mentorEmail,
+        item.technologiesUsed,
+        item.projectName,
+        item.projectDescription,
+        item.skillsGained,
+        item.companyLocation,
+        item.internshipStatus,
+        item.startDate,
+        item.endDate,
+        item.offerLetterLink,
+        item.experienceLetterLink,
+        <Button
+          variant="contained"
+          size="small"
+          onClick={() => handleDownloadCertificate(item.id)}
+        >
+          Download
+        </Button>
+      ];
+      
     case "researchpaper":
       return [item.id, item.student_name, item.title, item.publication_date, item.journal_name, item.co_authors];
     case "sports": return [item.id, item.studentName, item.sportName, item.achievement, item.eventDate, item.eventName, item.eventLevel, item.eventLocation, item.position,
@@ -277,11 +301,12 @@ const getFormFields = () => {
     case "faculty":
       return ["name", "email", "department", "mobile_no", "years_Of_Experience", "designation"];
 
-    case "student":
-      return ["name", "email", "year", "cgpa", "branch", "course"];
+      case "student":
+        return ["name", "email", "year", "course", "branch", "cgpa", "dateOfBirth", "gender", "yearOfAdmission", "yearOfGraduation", "status"];
+      
     case "researchpapers":
       return ["faculty_name", "title", "publication_date", "journal_name", "co_authors"];
-    case "conference": return ["facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificateLink"];
+    case "conference": return ["facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificatePdf"];
 
     case "awards":
       return [
@@ -293,24 +318,24 @@ const getFormFields = () => {
         "recognitionType",
         "eventName",
         "description",
-        "certificateLink"
+        "certificatePdf"
       ];
 
 
     case "developmentprogram": return ["facultyName", "programName", "organizedBy", "startDate", "endDate", "programType", "mode", "location", "durationDays", "certificateLink"];
 
     case "patents":
-      return ["facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificateLink"];
+      return ["facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificatePdf"];
 
     case "certificate":
-      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificate_link"];
+      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificatePdf"];
     case "hackathon":
-      return ["studentName", "enrollmentNumber", "eventName", "date", "teamName", "teamSize", "mentorName", "hackathonType", "organizingBody", "venue", "problemStatement", "technologyUsed", "prizeMoney", "sponsoringCompany", "position", "projectGithubLink", "projectDescription", "certificateStatus", "certificateLink"];
+      return ["studentName", "enrollmentNumber", "eventName", "date", "teamName", "teamSize", "mentorName", "hackathonType", "organizingBody", "venue", "problemStatement", "technologyUsed", "prizeMoney", "sponsoringCompany", "position", "projectGithubLink", "projectDescription", "certificateStatus", "certificatePdf"];
 
     case "placement":
       return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offer_letter_pdf", "company_location", "interview_mode"];
     case "internship":
-      return ["studentName", "enrollmentNumber", "companyName", "role", "internshipType", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologiesUsed", "projectName", "projectDescription", "skillsGained", "companyLocation", "internshipStatus", "startDate", "endDate", "offerLetterLink", "experienceLetterLink", "certificateLink"];
+      return ["studentName", "enrollmentNumber", "companyName", "role", "internshipType", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologiesUsed", "projectName", "projectDescription", "skillsGained", "companyLocation", "internshipStatus", "startDate", "endDate", "offerLetterLink", "experienceLetterLink", "certificatePdf"];
 
     case "researchpaper":
       return ["student_name", "title", "publication_date", "journal_name", "co_authors"];

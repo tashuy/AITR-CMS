@@ -3,8 +3,11 @@ package CMSAIML.example.CMSAIML.Controller;
 import CMSAIML.example.CMSAIML.Entity.FacultyConference;
 import CMSAIML.example.CMSAIML.Service.FacultyConferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,15 +27,39 @@ public class FacultyConferenceController {
         return facultyConferenceService.getConferenceById(id);
     }
 
-    @PostMapping
-    public FacultyConference createConference(@RequestBody FacultyConference conference) {
-        return facultyConferenceService.saveConference(conference);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FacultyConference> createConference(
+            @RequestPart("data") FacultyConference conference,
+            @RequestPart("pdf") MultipartFile file
+    ) throws IOException {
+        conference.setCertificatePdf(file.getBytes());
+        FacultyConference saved = facultyConferenceService.saveConference(conference);
+        return ResponseEntity.ok(saved);
     }
 
-    @PutMapping("/{id}")
-    public FacultyConference updateConference(@PathVariable Long id, @RequestBody FacultyConference conference) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<FacultyConference> updateConference(
+            @PathVariable Long id,
+            @RequestPart("data") FacultyConference conference,
+            @RequestPart("pdf") MultipartFile file
+    ) throws IOException {
         conference.setId(id);
-        return facultyConferenceService.saveConference(conference);
+        conference.setCertificatePdf(file.getBytes());
+        FacultyConference updated = facultyConferenceService.saveConference(conference);
+        return ResponseEntity.ok(updated);
+    }
+
+    @GetMapping("/{id}/download-pdf")
+    public ResponseEntity<byte[]> downloadCertificatePdf(@PathVariable Long id) {
+        FacultyConference conference = facultyConferenceService.getConferenceById(id);
+        if (conference == null || conference.getCertificatePdf() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=certificate_" + id + ".pdf")
+                .body(conference.getCertificatePdf());
     }
 
     @DeleteMapping("/{id}")

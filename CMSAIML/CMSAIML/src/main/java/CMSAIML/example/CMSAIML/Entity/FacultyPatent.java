@@ -1,9 +1,6 @@
 package CMSAIML.example.CMSAIML.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -25,5 +22,8 @@ public class FacultyPatent {
     private String expiryDate;
     private String country;
     private String patentCategory;
-    private String certificateLink;
+
+    @Lob
+    @Column(name = "certificate_pdf", columnDefinition = "LONGBLOB")
+    private byte[] certificatePdf;
 }
