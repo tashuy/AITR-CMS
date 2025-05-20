@@ -13,7 +13,9 @@ public class StudentPlacement {
 
     private String studentName;
 
+    private  String enrollmentNumber;
     private String companyName;
+
 
     private String jobRole;
 

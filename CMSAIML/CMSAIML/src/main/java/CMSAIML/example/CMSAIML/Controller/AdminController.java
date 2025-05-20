@@ -80,27 +80,24 @@ public class AdminController {
     public List<Faculty> getAllFaculty() {
         return adminService.getAllFaculty();
     }
-
-
     @PostMapping("/faculty")
     public ResponseEntity<String> addFaculty(@RequestBody FacultyDTO facultyDTO, @RequestHeader("username") String username) {
         if (adminService.isAdmin(username)) {
-            // Create Faculty entity and set properties
             Faculty faculty = new Faculty();
             faculty.setName(facultyDTO.getName());
             faculty.setEmail(facultyDTO.getEmail());
             faculty.setDepartment(facultyDTO.getDepartment());
             faculty.setMobile_no(facultyDTO.getMobile_no());
-            faculty.setYears_Of_Experience(facultyDTO.getYears_Of_Experience());
+            faculty.setTeaching_experience(facultyDTO.getTeaching_experience());
+            faculty.setIndustrial_experience(facultyDTO.getIndustrial_experience());
             faculty.setDesignation(facultyDTO.getDesignation());
 
-
-            // Save Faculty entity
             adminService.addFaculty(faculty);
             return ResponseEntity.ok("Faculty added successfully");
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
     }
+
 
 
 

@@ -20,8 +20,9 @@ public class Faculty {
     @Column(name = "mobile_no", unique = true)
     private String mobile_no;
 
-    @Column(name = "years_of_experience")
-    private Integer years_Of_Experience;
+    @Column(name = "teaching_experience")
+    private Integer teaching_experience;
+    private Integer industrial_experience;
 
     private String designation;
 }

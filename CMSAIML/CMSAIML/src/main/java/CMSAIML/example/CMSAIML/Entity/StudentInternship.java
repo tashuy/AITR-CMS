@@ -36,13 +36,16 @@ public class StudentInternship {
 
     @Temporal(TemporalType.DATE)
     private Date endDate;
-
     @Lob
+    @Column(name = "offer_letter_pdf", columnDefinition = "MEDIUMBLOB")
     private byte[] offerLetterPdf;
 
-    @Lob
-    private byte[] experienceLetterPdf;
 
     @Lob
+    @Column(name = "experience_letter_pdf", columnDefinition = "MEDIUMBLOB")
+    private byte[] experienceLetterPdf;
+    @Lob
+    @Column(name = "certificate_pdf", columnDefinition = "MEDIUMBLOB")
     private byte[] certificatePdf;
+
 }

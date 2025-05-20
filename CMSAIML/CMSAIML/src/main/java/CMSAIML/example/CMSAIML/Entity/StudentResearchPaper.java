@@ -12,10 +12,16 @@ public class StudentResearchPaper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String enrollement_number;
+    private String branch;
+
     private String student_name;
+    private  String award;
     private String title;
     private String journal_name;
     private String publication_date;
+    private  String main_author;
+
     private String co_authors;
 
 }

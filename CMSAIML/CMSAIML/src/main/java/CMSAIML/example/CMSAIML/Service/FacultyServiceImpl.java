@@ -35,10 +35,12 @@ public class FacultyServiceImpl implements FacultyService {
         faculty.setEmail(facultyDTO.getEmail());
         faculty.setDepartment(facultyDTO.getDepartment());
         faculty.setMobile_no(facultyDTO.getMobile_no());
-        faculty.setYears_Of_Experience(facultyDTO.getYears_Of_Experience());
+        faculty.setTeaching_experience(facultyDTO.getTeaching_experience());
+        faculty.setIndustrial_experience(facultyDTO.getIndustrial_experience());
         faculty.setDesignation(facultyDTO.getDesignation());
         facultyRepository.save(faculty);
     }
+
 
 
     @Override
