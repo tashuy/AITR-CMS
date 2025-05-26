@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "./img/AITR_LOGO.png";
+import logo from "../assets/img/AITR_LOGO.png";
 import { FaCopy } from "react-icons/fa";
 import { FaUserShield } from "react-icons/fa";
 import { IoCall } from "react-icons/io5";

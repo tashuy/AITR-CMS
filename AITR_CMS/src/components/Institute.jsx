@@ -7,7 +7,7 @@
 // } from "../api/mouApis";
 
 import React, { useState, useEffect } from "react";
-import AIMLBG from "./img/AIML_IMG.webp";
+import AIMLBG from "../assets/img/AIML_IMG.webp";
 
 
 const Institute = () => {

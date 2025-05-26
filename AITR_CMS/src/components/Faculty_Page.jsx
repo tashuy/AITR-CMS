@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
-import AIMLBG from "./img/AIML_IMG.webp";
+import AIMLBG from "../assets/img/AIML_IMG.webp";
 import {
   fetchFacultyData,
   fetchFacultyawardsData,

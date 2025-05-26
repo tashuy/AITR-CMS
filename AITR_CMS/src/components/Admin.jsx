@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { InputElement } from "./ui/InputElement";
+import { LoginElement } from "./ui/LoginElement";
 
 const Admin = () => {
   const [username, setUsername] = useState("");
@@ -18,8 +20,12 @@ const Admin = () => {
       return;
     }
 
+    // requests 
     try {
-      const response = await fetch("http://localhost:8080/admin", {
+
+      const adminUrl = "http://localhost:8080/admin";
+
+      const response = await fetch(adminUrl , {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,6 +38,7 @@ const Admin = () => {
         localStorage.setItem("adminUsername", loggedInUsername); // Save username
         // localStorage.setItem("isAdmin", "true"); // optional if you want to check later
       
+        // redirect to admin dashboard
         navigate("/admindashboard");
       
       
@@ -61,16 +68,15 @@ const Admin = () => {
               alt="Admin Avatar"
             />
           </div>
-
+          {/* Admin login page */}
           <div>
-            <input
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              placeholder="Username*"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+          <InputElement 
+            placeholder={"username"}
+            type={"text"}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required={true}
+          />
           </div>
           <div>
             <input
@@ -82,16 +88,7 @@ const Admin = () => {
               required
             />
           </div>
-
-          <div className="flex justify-between items-center text-sm">
-            <label className="flex items-center space-x-2">
-              <input type="checkbox" className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-600">Remember Me</span>
-            </label>
-            <a href="#" className="text-blue-500 hover:underline">
-              Lost your password?
-            </a>
-          </div>
+          <LoginElement />
 
           {error && (
             <p className="text-red-500 text-sm text-center">{error}</p>

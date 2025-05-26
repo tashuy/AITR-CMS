@@ -9,8 +9,10 @@ import Admin from "./components/Admin";
 import AdminDashboard from "./components/AdminDashboard";
 import Institute from "./components/Institute";
 import Department from "./components/Department";
+import { InputElement } from "./components/ui/InputElement";
 const App = () => {
   return (
+
     <Router>
       {" "}
       <div>
