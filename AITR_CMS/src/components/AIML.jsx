@@ -10,6 +10,7 @@ import {
   fetchSportsData,
   fetchstudentplacementsData,
 } from "../api";
+import { ButtonElement } from "./ui/ButtonElement";
 
 const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
   if (!data || data.length === 0) {
@@ -424,13 +425,11 @@ const AIML = () => {
       <div className="w-[80vw] m-auto mt-8">
         <div className="flex justify-center gap-2 py-2">
           {Object.keys(CategoriesDetails).map((category, index) => (
-            <button
+            <ButtonElement
               key={index}
-              className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded"
               onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </button>
+              children={category}
+            />
           ))}
         </div>
         {selectedCategory && (

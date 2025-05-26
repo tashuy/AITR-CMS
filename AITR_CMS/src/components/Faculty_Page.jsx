@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import AIMLBG from "../assets/img/AIML_IMG.webp";
+import { ButtonElement } from "./ui/ButtonElement";
 import {
   fetchFacultyData,
   fetchFacultyawardsData,
@@ -9,6 +10,7 @@ import {
   fetchFacultypatentsData,
   fetchFacultyresearchpapersData,
 } from "../api";
+import { Button } from "@mui/material";
 
 const Faculty = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -200,13 +202,11 @@ const Faculty = () => {
         />
 
         {Object.keys(tableHeaders).map((category) => (
-          <button
+          <ButtonElement
             key={category}
-            className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded"
             onClick={() => setSelectedCategory(category)}
-          >
-            {category}
-          </button>
+            children={category}
+          />
         ))}
       </div>
       {selectedCategory && (
@@ -248,13 +248,13 @@ const Faculty = () => {
 
         <button
           onClick={applyFilters}
-          className="px-4 py-2 bg-blue-500 text-white font-semibold rounded"
+          className="px-4 py-2 bg-blue-500  hover:bg-blue-700 text-white font-semibold rounded"
         >
           Apply Filters
         </button>
         <button
           onClick={downloadExcel}
-          className="px-4 py-2 bg-green-500 text-white font-semibold rounded"
+          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded"
         >
           Download Excel
         </button>

@@ -8,6 +8,7 @@
 
 import React, { useState, useEffect } from "react";
 import AIMLBG from "../assets/img/AIML_IMG.webp";
+import { ButtonElement } from "./ui/ButtonElement";
 
 
 const Institute = () => {
@@ -103,12 +104,10 @@ const Institute = () => {
 
       {/* MOU Button */}
       <div className="flex justify-center gap-2 py-6">
-        <button
+        <ButtonElement
           onClick={() => setShowSubTabs(true)}
-          className="px-6 py-2 bg-[#00062B] text-white font-semibold rounded"
-        >
-          MOU
-        </button>
+          children={"MOU"}
+        />
       </div>
 
       {/* Filters and Sub-tabs */}
