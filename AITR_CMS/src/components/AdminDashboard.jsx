@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
+import Navbar from "./Navbar";
+import { ButtonElement } from "./ui/ButtonElement";
+import { TabsElement } from "./ui/TabElemenet";
 
 
 
@@ -16,6 +19,8 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
       },
       data,
     };
+
+    // important line
     console.log(`Hitting: ${method} ${config.url}`);
     const response = await axios(config);
     console.log("Response:", response);
@@ -34,7 +39,7 @@ const apiEndpoints = {
   student: "/student",
   researchpapers: "/faculty-research-papers",
   conference: "/faculty-conferences",
-  awards: "/admin/faculty-awards", // New endpoint for awards
+  awards: "/admin/faculty-awards",
   developmentprogram: "/faculty-fdps",
   patents: "/faculty-patents",
   certificate: "/certificates",
@@ -49,7 +54,9 @@ const apiEndpoints = {
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab") || "faculty");
+  
+  const [activeTab, setActiveTab] = useState("faculty");
+  const [active, setActive] = useState(false);
   const [subTab, setSubTab] = useState(null);
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
@@ -64,7 +71,12 @@ const AdminDashboard = () => {
   // Fetch data based on active tab
   const fetchData = async () => {
     try {
+
+      
       const tabKey = subTab || activeTab;
+      if( tabKey === "faculty" || "student"){
+        setActive(true)
+      }
       const endpoint = editing
         ? `${apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
@@ -81,6 +93,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchData();
+    setActive(true)
   }, [activeTab, subTab]);
   const handleDownloadCertificate = async (id) => {
     try {
@@ -165,7 +178,7 @@ const handleEdit = (item) => {
   setNewEntry({ ...item }); // Ensure a new object reference
   setEditing(item);
 };
-const facultyTabs = ["researchpaper", "conference", "awards", "developmentprogram", "patents"];
+const facultyTabs = ["conference", "awards", "developmentprogram", "patents"];
 const studentTabs = ["certificate", "hackathon", "placement", "internship", "researchpaper", "sports"];
 
 
@@ -350,40 +363,42 @@ const getFormFields = () => {
 
 
 return (
+  <div>
+    {/* navigation bar */}
+  <Navbar />
+
   <div className="p-6 bg-gray-100 text-black min-h-screen">
     <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
     {/* Main Tabs */}
     <div className="flex space-x-4 mb-4">
-      <Button
-        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+      <button
+        className={`px - 4 py-2 text-base font-semibold rounded ${active ? "bg-blue-500 text-white p-1" : "bg-gray-200"}`}
       onClick={() => { setActiveTab("faculty"); setSubTab(null); }}
-        >
-      Faculty
-    </Button>
-    <Button
-      className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-    onClick={() => { setActiveTab("student"); setSubTab(null); }}
-        >
-    Student
-  </Button>
+      >
+        Faculty
+      </button>
+
+    <TabsElement onClick={onClick} />
       </div >
 
   {/* Sub-tabs for Faculty and Student */ }
-{
-  activeTab === "faculty" && (
-    <div className="flex space-x-4 mb-4">
-      {facultyTabs.map((tab) => (
-        <Button
-          key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
-      onClick={() => setSubTab(tab)}
-            >
-      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
-  ))
-}
+  <div className="">
+    {
+      activeTab === "faculty" && (
+        <div className="flex space-x-4 mb-4">
+          {facultyTabs.map((tab) => (
+            <button
+              key={tab}
+              className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+              onClick={() => setSubTab(tab)}
+                >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+            ))
+          }
         </div >
-      )}
+    )}
+  </div>
 
 {
   activeTab === "student" && (
@@ -391,11 +406,11 @@ return (
       {studentTabs.map((tab) => (
         <Button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
-      onClick={() => setSubTab(tab)}
-            >
-      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
+          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white px-1" : "bg-gray-200"}`}
+          onClick={() => setSubTab(tab)}
+          >
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </Button>
   ))
 }
         </div >
@@ -408,23 +423,26 @@ return (
 
 
 {/* Form */ }
-<form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-  {getFormFields().map((field) => (
-    <input
-      key={field}
-      type="text"
-      placeholder={field.split("_").join(" ").toUpperCase()}
-      value={newEntry[field] ?? ""} // Ensures no undefined value
-      onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
-      className="border p-2 rounded"
-      required
-    />
-
-  ))}
-  <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded">
-    {editing ? "Update" : "Add"}
-  </button>
-</form>
+<div class="form">
+  <form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    {getFormFields().map((field) => (
+      <input
+        key={field}
+        type="text"
+        placeholder={field.split("_").join(" ").toUpperCase()}
+        value={newEntry[field] ?? ""} // Ensures no undefined value
+        onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
+        className="border p-2 rounded"
+        required
+      />
+      
+    ))}
+    
+    <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded">
+      {editing ? "Update" : "Add"}
+    </button>
+  </form>
+</div>
 
 {/* Table */ }
 <table className="min-w-full bg-white">
@@ -460,6 +478,7 @@ return (
   </tbody>
 </table>
     </div >
+    </div>
   );
 };
 export default AdminDashboard;

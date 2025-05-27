@@ -12,23 +12,24 @@ import Department from "./components/Department";
 import { InputElement } from "./components/ui/InputElement";
 const App = () => {
   return (
+    <AdminDashboard />
 
-    <Router>
-      {" "}
-      <div>
-        <Navbar />
-        <Navbar2 />
-        <Routes>
-          <Route path="/" element={<Page1 />} />
-          <Route path="/institute" element={<Institute/>}/>;
-          <Route path="/department" element={<Department/>}/>;
-          <Route path="/faculty" element={<Faculty />} />
-          <Route path="/students" element={<Student />} />          
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-        </Routes>
-      </div>
-    </Router>
+    // <Router>
+    //   {" "}
+    //   <div>
+    //     <Navbar />
+    //     <Navbar2 />
+    //     <Routes>
+    //       <Route path="/" element={<Page1 />} />
+    //       <Route path="/institute" element={<Institute/>}/>;
+    //       <Route path="/department" element={<Department/>}/>;
+    //       <Route path="/faculty" element={<Faculty />} />
+    //       <Route path="/students" element={<Student />} />          
+    //       <Route path="/admin" element={<Admin />} />
+    //       <Route path="/admindashboard" element={<AdminDashboard />} />
+    //     </Routes>
+    //   </div>
+    // </Router>
   );
 };
 
