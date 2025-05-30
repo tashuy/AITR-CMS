@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
-import Navbar from "./Navbar";
-import { ButtonElement } from "./ui/ButtonElement";
-import { TabElement } from "./ui/TabElement";
 
 
 
 const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
   try {
-    // const adminUsername = localStorage.getItem("adminUsername");
+    const adminUsername = localStorage.getItem("adminUsername");
+    const url = "http://localhost:3000/student"
+    // url = `http://localhost:8080${endpoint}`
     const config = {
       method,
-      url: `http://localhost:8080${endpoint}`,
+      url: url,
       headers: {
         "Content-Type": "application/json",
-        
-        // ...(adminUsername && { username: adminUsername }),
+        ...(adminUsername && { username: adminUsername }),
       },
       data,
     };
-
-    // important line
     console.log(`Hitting: ${method} ${config.url}`);
     const response = await axios(config);
     console.log("Response:", response);
@@ -40,7 +36,7 @@ const apiEndpoints = {
   student: "/student",
   researchpapers: "/faculty-research-papers",
   conference: "/faculty-conferences",
-  awards: "/admin/faculty-awards",
+  awards: "/admin/faculty-awards", // New endpoint for awards
   developmentprogram: "/faculty-fdps",
   patents: "/faculty-patents",
   certificate: "/certificates",
@@ -55,9 +51,7 @@ const apiEndpoints = {
 };
 
 const AdminDashboard = () => {
-  
-  const [activeTab, setActiveTab] = useState("faculty");
-  const [active, setActive] = useState(false);
+  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab") || "faculty");
   const [subTab, setSubTab] = useState(null);
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
@@ -69,29 +63,18 @@ const AdminDashboard = () => {
     localStorage.setItem("activeTab", tab);
   };
 
-  const addDataHandler = () => {
-    console.log("hi from data handler")
-    const responce = getTableRowData();
-    console.log(responce)
-     
-  }
-
   // Fetch data based on active tab
   const fetchData = async () => {
-    try {      
+    try {
       const tabKey = subTab || activeTab;
-      
       const endpoint = editing
         ? `${apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
 
-        console.log("hi" + endpoint)
-
 
       if (!endpoint) return;
       const res = await fetchDataFromApi(endpoint);
-      setData(res);
-      console.log(res)
+      setData(res.response);
       console.log("API Response:", res);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -101,8 +84,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchData();
   }, [activeTab, subTab]);
-
-
   const handleDownloadCertificate = async (id) => {
     try {
       const response = await axios.get(`http://localhost:8080/sports/${id}/certificate`, {
@@ -158,14 +139,14 @@ const config = {
   data: tabKey === "sports" ? formData : newEntry,
 };
 
-  await axios(config);
-  setNewEntry({});
-  setEditing(false);
-  fetchData(); // Refresh data
-      } catch (error) {
-    console.error("Error adding/updating entry:", error?.response?.data || error.message);
-  }
-    };
+await axios(config);
+setNewEntry({});
+setEditing(false);
+fetchData(); // Refresh data
+    } catch (error) {
+  console.error("Error adding/updating entry:", error?.response?.data || error.message);
+}
+  };
 
 
 
@@ -186,7 +167,7 @@ const handleEdit = (item) => {
   setNewEntry({ ...item }); // Ensure a new object reference
   setEditing(item);
 };
-const facultyTabs = ["conference", "awards", "developmentprogram", "patents"];
+const facultyTabs = ["researchpaper", "conference", "awards", "developmentprogram", "patents"];
 const studentTabs = ["certificate", "hackathon", "placement", "internship", "researchpaper", "sports"];
 
 
@@ -323,47 +304,45 @@ const getFormFields = () => {
       return ["name", "email", "department", "mobile_no", "years_Of_Experience", "designation"];
 
       case "student":
-        return ["name", "email", "year", "course", "branch", "cgpa", "dateOfBirth", "gender", "year_Of_Admission", "year_Of_Graduation", "status"];
+        return ["name", "email", "year", "course", "branch", "cgpa", "dateOfBirth", "gender", "yearOfAdmission", "yearOfGraduation", "status"];
       
     case "researchpapers":
       return ["faculty_name", "title", "publication_date", "journal_name", "co_authors"];
-    case "conference": 
-      return ["faculty_name", "conference_name", "paperTitle", "presentation_date", "conference_type", "conference_location", "conference_mode", "publication_status", "journal_name", "issue_number", "indexing", "certificate_pdf"];
+    case "conference": return ["facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificatePdf"];
 
     case "awards":
       return [
-        "faculty_name",
-        "award_name",
-        "awarded_by",
-        "award_date",
+        "facultyName",
+        "awardName",
+        "awardedBy",
+        "awardDate",
         "category",
-        "recognition_yype",
-        "event_name",
+        "recognitionType",
+        "eventName",
         "description",
-        "certificate_pdf"
+        "certificatePdf"
       ];
 
 
-    case "developmentprogram": 
-      return ["faculty_name", "program_Name", "organized_By", "start_Date", "end_Date", "program_Type", "mode", "location", "duration_Days", "certificate_Link"];
+    case "developmentprogram": return ["facultyName", "programName", "organizedBy", "startDate", "endDate", "programType", "mode", "location", "durationDays", "certificateLink"];
 
     case "patents":
-      return ["faculty_Name", "patent_Title", "patent_Number", "application_Date", "status", "inventor_Names", "patent_Type", "patent_Office", "grant_Date", "expiry_Date", "country", "patent_Category", "certificate_Pdf"];
+      return ["facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificatePdf"];
 
     case "certificate":
-      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "relatedcourse_or_program", "certificate_status", "verified", "certificate_Pdf"];
+      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificatePdf"];
     case "hackathon":
-      return ["student_Name", "enrollment_Number", "event_Name", "date", "team_Name", "team_Size", "mentor_Name", "hackathon_Type", "organizing_Body", "venue", "problem_Statement", "technology_Used", "prize_Money", "sponsoring_Company", "position", "project_Github_Link", "project_Description", "certificate_Status", "certificate_Pdf"];
+      return ["studentName", "enrollmentNumber", "eventName", "date", "teamName", "teamSize", "mentorName", "hackathonType", "organizingBody", "venue", "problemStatement", "technologyUsed", "prizeMoney", "sponsoringCompany", "position", "projectGithubLink", "projectDescription", "certificateStatus", "certificatePdf"];
 
     case "placement":
-      return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offerletter_pdf", "company_location", "interview_mode"];
+      return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offer_letter_pdf", "company_location", "interview_mode"];
     case "internship":
-      return ["student_Name", "enrollment_Number", "company_Name", "role", "internship_Type", "stipend", "duration", "department", "mentorName", "mentor_Email", "technologies_Used", "project_Name", "project_Description", "skills_Gained", "company_Location", "internship_Status", "start_Date", "endDate", "offer_Letter_Link", "experience_Letter_Link", "certificatePdf"];
+      return ["studentName", "enrollmentNumber", "companyName", "role", "internshipType", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologiesUsed", "projectName", "projectDescription", "skillsGained", "companyLocation", "internshipStatus", "startDate", "endDate", "offerLetterLink", "experienceLetterLink", "certificatePdf"];
 
     case "researchpaper":
-      return ["student_name", "title", "publication_date", "journal_name", "coauthors"];
+      return ["student_name", "title", "publication_date", "journal_name", "co_authors"];
     case "sports":
-      return ["student_Name", "sport_Name", "achievement", "event_Date", "event_Name", "event_Level", "event_Location", "position", "certificate", "coach_Name"];
+      return ["studentName", "sportName", "achievement", "eventDate", "eventName", "eventLevel", "eventLocation", "position", "certificate", "coachName"];
 
     default:
       return [];
@@ -373,53 +352,40 @@ const getFormFields = () => {
 
 
 return (
-  <div>
-    {/* navigation bar */}
-  <Navbar />
-
   <div className="p-6 bg-gray-100 text-black min-h-screen">
     <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
     {/* Main Tabs */}
     <div className="flex space-x-4 mb-4">
-
-      <TabElement tabName={"faculty"} activeTab={activeTab} setActiveTab={setActiveTab} setSubTab={setSubTab} active={active}/>
-      <TabElement tabName={"student"} activeTab={activeTab} setActiveTab={setActiveTab} setSubTab={setSubTab} active={active}/>
-    </div>
-
-    {/* <div className="flex space-x-4 mb-4">
-      <button
-        className={`px - 4 py-2 text-base font-semibold rounded ${active ? "bg-blue-500 text-white p-1" : "bg-gray-200"}`}
+      <Button
+        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
       onClick={() => { setActiveTab("faculty"); setSubTab(null); }}
-      >
-        Faculty
-      </button>
-
-    <button
-      className={`px - 4 py-2 text-base font-semibold rounded ${active ? "bg-blue-500 text-white p-1" : "bg-gray-200"}`}
-      onClick={() => { setActiveTab("student"); setSubTab(null); }}
-      >
-        Student
-      </button>
-      </div > */}
+        >
+      Faculty
+    </Button>
+    <Button
+      className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+    onClick={() => { setActiveTab("student"); setSubTab(null); }}
+        >
+    Student
+  </Button>
+      </div >
 
   {/* Sub-tabs for Faculty and Student */ }
-  <div className="">
-    {
-      activeTab === "faculty" && (
-        <div className="flex space-x-4 mb-4">
-          {facultyTabs.map((tab) => (
-            <button
-              key={tab}
-              className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
-              onClick={() => setSubTab(tab)}
-                >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-            ))
-          }
+{
+  activeTab === "faculty" && (
+    <div className="flex space-x-4 mb-4">
+      {facultyTabs.map((tab) => (
+        <Button
+          key={tab}
+          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+      onClick={() => setSubTab(tab)}
+            >
+      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+    </Button>
+  ))
+}
         </div >
-    )}
-  </div>
+      )}
 
 {
   activeTab === "student" && (
@@ -427,11 +393,11 @@ return (
       {studentTabs.map((tab) => (
         <Button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white px-1" : "bg-gray-200"}`}
-          onClick={() => setSubTab(tab)}
-          >
-          {tab.charAt(0).toUpperCase() + tab.slice(1)}
-        </Button>
+          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+      onClick={() => setSubTab(tab)}
+            >
+      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+    </Button>
   ))
 }
         </div >
@@ -444,26 +410,23 @@ return (
 
 
 {/* Form */ }
-<div class="form">
-  <form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-    {getFormFields().map((field) => (
-      <input
-        key={field}
-        type="text"
-        placeholder={field.split("_").join(" ").toLowerCase()}
-        value={newEntry[field] ?? ""} // Ensures no undefined value
-        onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
-        className="border p-2 rounded"
-        required
-      />
+<form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+  {getFormFields().map((field) => (
+    <input
+      key={field}
+      type="text"
+      placeholder={field.split("_").join(" ").toUpperCase()}
+      value={newEntry[field] ?? ""} // Ensures no undefined value
+      onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
+      className="border p-2 rounded"
       
-    ))}
-    
-    <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded" onClick={addDataHandler}>
-      {editing ? "Update" : "Add"}
-    </button>
-  </form>
-</div>
+    />
+
+  ))}
+  <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded">
+    {editing ? "Update" : "Add"}
+  </button>
+</form>
 
 {/* Table */ }
 <table className="min-w-full bg-white">
@@ -499,7 +462,6 @@ return (
   </tbody>
 </table>
     </div >
-    </div>
   );
 };
 export default AdminDashboard;
