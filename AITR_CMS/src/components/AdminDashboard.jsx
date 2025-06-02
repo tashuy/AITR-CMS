@@ -7,8 +7,8 @@ import { Button } from "@mui/material";
 const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
   try {
     const adminUsername = localStorage.getItem("adminUsername");
-    const url = "http://localhost:3000/student"
-    // url = `http://localhost:8080${endpoint}`
+    // const url = endpoint
+    url = `http://localhost:8080${endpoint}`
     const config = {
       method,
       url: url,
@@ -19,8 +19,9 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
       data,
     };
     console.log(`Hitting: ${method} ${config.url}`);
-    const response = await axios(config);
-    console.log("Response:", response);
+    const response = await axios.get(endpoint);
+    
+    console.log("Response:", response.data);
     return response.data;
   } catch (err) {
     console.error("API Error:", err?.response?.data || err.message);
@@ -70,10 +71,12 @@ const AdminDashboard = () => {
       const endpoint = editing
         ? `${apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
-
+      // const endpoint = "http://localhost:3000/faculty/facultydata"
 
       if (!endpoint) return;
-      const res = await fetchDataFromApi(endpoint);
+      const  res  = await fetchDataFromApi(endpoint);
+      
+      console.log("res" ,res.response)
       setData(res.response);
       console.log("API Response:", res);
     } catch (error) {
@@ -110,43 +113,69 @@ const AdminDashboard = () => {
 
 // Handle form submission for adding/updating entries
 const handleAddOrUpdate = async () => {
+  console.log("hi from : handleAddorUpdate")
+  console.log("new Entry: " , newEntry) // new entry has data
+  // i am defining my own endpoint
   try {
     const tabKey = subTab || activeTab;
+    console.log(tabKey)
     const endpoint = editing
       ? `${ apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
-const method = editing ? "PUT" : "POST";
+    
+    console.log("endpoing according to tabKey", + endpoint )
+    const method = (editing == "add" ? "PUT" : "POST");
+    console.log(method)
 
-let formData = new FormData();
 
-if (tabKey === "sports" && newEntry.certificateFile) {
-  Object.entries(newEntry).forEach(([key, value]) => {
-    if (value !== undefined && key !== "certificateFile") {
-      formData.append(key, value);
+    let formData = new FormData();
+
+    if (tabKey === "sports" && newEntry.certificateFile) {
+      console.log("new entry : " + newEntry)
+      Object.entries(newEntry).forEach(([key, value]) => {
+      if (value !== undefined && key !== "certificateFile") {
+        formData.append(key, value);
+        console.log("form data: " , formData)
+      }
+      });
     }
-  });
   formData.append("certificate", newEntry.certificateFile);
-}
 
-const config = {
-  method,
-  url:` http://localhost:8080${endpoint}`,
-  headers: {
+// node js endpoint
+  // await fetch("http://localhost:3000/faculty/facultydata", {
+  //       method:"POST",
+  //       headers:{
+  //           "Content-Type": "application/json"
+  //       },
+  //       body: JSON.stringify(newEntry)
+  //   }).then(console.log("request send"))
+  
+
+
+
+  const config = {
+    method,
+    url:`http://localhost:8080/${endpoint}`,
+    headers: {
     ...(tabKey === "sports"
       ? { "Content-Type": "multipart/form-data" }
       : { "Content-Type": "application/json" }),
-  },
-  data: tabKey === "sports" ? formData : newEntry,
-};
-
-await axios(config);
-setNewEntry({});
-setEditing(false);
-fetchData(); // Refresh data
-    } catch (error) {
-  console.error("Error adding/updating entry:", error?.response?.data || error.message);
-}
+    },
+  
+  // data: tabKey === "sports" ? formData : newEntry,
+    body: newEntry
   };
+
+  // sending entry to the backend
+  await axios( config ).then(alert("Submitted"))
+
+  setNewEntry({});
+  setEditing(false);
+  fetchData(endpoint); // Refresh data
+      } catch (error) {
+    console.error("Error adding/updating entry:", error?.response?.data || error.message);
+  }
+};
 
 
 
@@ -324,25 +353,25 @@ const getFormFields = () => {
       ];
 
 
-    case "developmentprogram": return ["facultyName", "programName", "organizedBy", "startDate", "endDate", "programType", "mode", "location", "durationDays", "certificateLink"];
+    case "developmentprogram": return ["faculty_Name", "program_Name", "organized_By", "start_Date", "end_Date", "programT_ype", "mode", "location", "duration_Days", "certificate_Link"];
 
     case "patents":
-      return ["facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificatePdf"];
+      return ["faculty_Name", "patent_Title", "patent_Number", "application_Date", "status", "inventor_Names", "patentType", "patent_Office", "grant_Date", "expiry_Date", "country", "patent_Category", "certificate_Pdf"];
 
     case "certificate":
-      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificatePdf"];
+      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificate_Pdf"];
     case "hackathon":
-      return ["studentName", "enrollmentNumber", "eventName", "date", "teamName", "teamSize", "mentorName", "hackathonType", "organizingBody", "venue", "problemStatement", "technologyUsed", "prizeMoney", "sponsoringCompany", "position", "projectGithubLink", "projectDescription", "certificateStatus", "certificatePdf"];
+      return ["student_Name", "enrollment_Number", "event_Name", "date", "team_Name", "team_Size", "mentor_Name", "hackathon_Type", "organizing_Body", "venue", "problem_Statement", "technology_Used", "prize_Money", "sponsoring_Company", "position", "project_GithubLink", "project_Description", "certificate_Status", "certificate_Pdf"];
 
     case "placement":
       return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offer_letter_pdf", "company_location", "interview_mode"];
     case "internship":
-      return ["studentName", "enrollmentNumber", "companyName", "role", "internshipType", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologiesUsed", "projectName", "projectDescription", "skillsGained", "companyLocation", "internshipStatus", "startDate", "endDate", "offerLetterLink", "experienceLetterLink", "certificatePdf"];
+      return ["studentName", "enrollment_Number", "company_Name", "role", "internship_Type", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologies_Used", "project_Name", "project_Description", "skills_Gained", "company_Location", "internship_Status", "start_Date", "end_Date", "offerLetter_Link", "experience_LetterLink", "certificate_Pdf"];
 
     case "researchpaper":
       return ["student_name", "title", "publication_date", "journal_name", "co_authors"];
     case "sports":
-      return ["studentName", "sportName", "achievement", "eventDate", "eventName", "eventLevel", "eventLocation", "position", "certificate", "coachName"];
+      return ["student_Name", "sport_Name", "achievement", "event_Date", "event_Name", "event_Level", "event_Location", "position", "certificate", "coachName"];
 
     default:
       return [];
@@ -375,29 +404,30 @@ return (
   activeTab === "faculty" && (
     <div className="flex space-x-4 mb-4">
       {facultyTabs.map((tab) => (
-        <Button
+        <button
           key={tab}
           className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
-      onClick={() => setSubTab(tab)}
+          onClick={() => setSubTab(tab)}
             >
-      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
-  ))
-}
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </button>
+        ))
+      }
         </div >
-      )}
+      )
+  }
 
 {
   activeTab === "student" && (
     <div className="flex space-x-4 mb-4">
       {studentTabs.map((tab) => (
-        <Button
+        <button
           key={tab}
           className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
       onClick={() => setSubTab(tab)}
             >
       {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
+    </button>
   ))
 }
         </div >
