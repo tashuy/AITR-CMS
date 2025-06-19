@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import Navbar from "./Navbar";
@@ -38,12 +38,16 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
 
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("faculty"));
-  const [subTab, setSubTab] = useState(null);
+  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab"));
+  const [subTab, setSubTab] = useState(localStorage.getItem("subTab"));
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
   const [editing, setEditing] = useState(null);
-  const [certificateFile, setCertificateFile] = useState(null)
+  const [certificateFile, setFile] = useState(null)
+  const previousTab = useRef();
+  const previousSubtab = useRef();
+
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -70,8 +74,13 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    previousTab.current = activeTab;
+    previousSubtab.current = subTab;
+    localStorage.setItem("subTab" , previousSubtab.current)
+    localStorage.setItem("activeTab" ,previousTab.current)
     fetchData();
   }, [activeTab, subTab]);
+
   const handleDownloadCertificate = async (id) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/sports/${id}/certificate`, {
@@ -414,7 +423,7 @@ return (
       type="file"
       placeholder={field.split("_").join(" ").toUpperCase()}
       value={newEntry[field] ?? ""} // Ensures no undefined value
-      onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.files[0] })}
+      onChange={(e) => setFile({ ...newEntry, [field]: e.target.files[0] })}
       className="border p-2 rounded"
       
     /> :
