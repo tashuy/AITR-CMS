@@ -10,14 +10,19 @@ import AdminDashboard from "./components/AdminDashboard";
 import Institute from "./components/Institute";
 import Department from "./components/Department";
 import { InputElement } from "./components/ui/InputElement";
-import { FacultyStudentFrom } from "./components/FacultyStudentForm";
+import MouDashboard from "../Tabs/MouDashboard";
+import AdminDashboardDemo from "./components/AdminDashBoardDemo";
+import FileUploader from "./components/FileUploader";
+import DownloadComponent from "./components/DownlaodComponent";
+// import { FacultyStudentFrom } from "./components/FacultyStudentForm";
 
 const App = () => {
   return (
 
-
-
+    // <AdminDashboardDemo />
     <AdminDashboard />
+    // <Faculty />
+
     // <Router>
     //   {" "}
     //   <div>

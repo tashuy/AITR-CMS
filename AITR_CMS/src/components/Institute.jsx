@@ -9,6 +9,7 @@
 import React, { useState, useEffect } from "react";
 import AIMLBG from "../assets/img/AIML_IMG.webp";
 import { ButtonElement } from "./ui/ButtonElement";
+import MouDashboard from "../../Tabs/MouDashboard";
 
 
 const Institute = () => {
@@ -103,11 +104,19 @@ const Institute = () => {
       </div>
 
       {/* MOU Button */}
-      <div className="flex justify-center gap-2 py-6">
-        <ButtonElement
-          onClick={() => setShowSubTabs(true)}
-          children={"MOU"}
-        />
+      <div className="flex justify-center gap-2 py-6 bg-green-200">
+        <button 
+        className="px-4 py-2 text-base font-semibold bg-[#00062B] hover:bg-blue-900 text-white rounded"
+          onClick={() => {
+            setShowSubTabs((p) => !p)
+            console.log(showSubTabs)
+          }}
+          >
+            Mou tab
+          </button>
+      </div>
+      <div>
+        { showSubTabs ? <MouDashboard /> : "null" }
       </div>
 
       {/* Filters and Sub-tabs */}

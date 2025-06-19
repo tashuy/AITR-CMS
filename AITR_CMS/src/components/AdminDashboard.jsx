@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
+import Navbar from "./Navbar";
+import { API_BASE_URL, apiEndpoints } from "../config";
 
 
 
@@ -32,27 +34,11 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
 
 
 // API endpoints
-const apiEndpoints = {
-  faculty: "/admin/faculty",
-  student: "/student",
-  researchpapers: "/faculty-research-papers",
-  conference: "/faculty-conferences",
-  awards: "/admin/faculty-awards", // New endpoint for awards
-  developmentprogram: "/faculty-fdps",
-  patents: "/faculty-patents",
-  certificate: "/certificates",
-  hackathon: '/hackathons',
-  placement: "/student-placements",
-  internship: "/internships",
-  researchpaper: "/research-papers",
-  sports: "/sports"
 
 
-
-};
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab") || "faculty");
+  const [activeTab, setActiveTab] = useState(localStorage.getItem("faculty"));
   const [subTab, setSubTab] = useState(null);
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
@@ -68,11 +54,10 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const tabKey = subTab || activeTab;
-      const endpoint = editing
+      const endpoint = editing === "add"
         ? `${apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
-      // const endpoint = "http://localhost:3000/faculty/facultydata"
-
+      
       if (!endpoint) return;
       const  res  = await fetchDataFromApi(endpoint);
       
@@ -89,7 +74,7 @@ const AdminDashboard = () => {
   }, [activeTab, subTab]);
   const handleDownloadCertificate = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:8080/sports/${id}/certificate`, {
+      const response = await axios.get(`${API_BASE_URL}/sports/${id}/certificate`, {
         responseType: "blob", // ensures it's treated as a file
       });
 
@@ -113,25 +98,17 @@ const AdminDashboard = () => {
 
 // Handle form submission for adding/updating entries
 const handleAddOrUpdate = async () => {
-  console.log("hi from : handleAddorUpdate")
-  console.log("new Entry: " , newEntry) // new entry has data
   // i am defining my own endpoint
   try {
     const tabKey = subTab || activeTab;
-    console.log(tabKey)
-    const endpoint = editing
-      ? `${ apiEndpoints[tabKey]}/${newEntry.id}`
-        : apiEndpoints[tabKey];
-    
-    console.log("endpoing according to tabKey", + endpoint )
-    const method = (editing == "add" ? "PUT" : "POST");
-    console.log(method)
+    const endpoint = `${apiEndpoints[tabKey]}/${newEntry.id}`
+    const method = "POST"
+
 
 
     let formData = new FormData();
 
     if (tabKey === "sports" && newEntry.certificateFile) {
-      console.log("new entry : " + newEntry)
       Object.entries(newEntry).forEach(([key, value]) => {
       if (value !== undefined && key !== "certificateFile") {
         formData.append(key, value);
@@ -140,16 +117,7 @@ const handleAddOrUpdate = async () => {
       });
     }
   formData.append("certificate", newEntry.certificateFile);
-
-// node js endpoint
-  // await fetch("http://localhost:3000/faculty/facultydata", {
-  //       method:"POST",
-  //       headers:{
-  //           "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify(newEntry)
-  //   }).then(console.log("request send"))
-  
+  formData.append("data", newEntry)
 
 
 
@@ -157,16 +125,12 @@ const handleAddOrUpdate = async () => {
     method,
     url:`http://localhost:8080/${endpoint}`,
     headers: {
-    ...(tabKey === "sports"
-      ? { "Content-Type": "multipart/form-data" }
-      : { "Content-Type": "application/json" }),
-    },
-  
+        "Content-Type": "multipart/form-data" 
+        },  
   // data: tabKey === "sports" ? formData : newEntry,
-    body: newEntry
+    data: formData
   };
 
-  // sending entry to the backend
   await axios( config ).then(alert("Submitted"))
 
   setNewEntry({});
@@ -381,23 +345,25 @@ const getFormFields = () => {
 
 
 return (
+  <div>
+  <Navbar />
   <div className="p-6 bg-gray-100 text-black min-h-screen">
-    <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
-    {/* Main Tabs */}
-    <div className="flex space-x-4 mb-4">
+      <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
+      {/* Main Tabs */}
+      <div className="flex space-x-4 mb-4">
+        <Button
+          className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+        onClick={() => { setActiveTab("faculty");  }}
+          >
+        Faculty
+      </Button>
       <Button
-        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-      onClick={() => { setActiveTab("faculty"); setSubTab(null); }}
-        >
-      Faculty
-    </Button>
-    <Button
-      className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-    onClick={() => { setActiveTab("student"); setSubTab(null); }}
-        >
-    Student
-  </Button>
-      </div >
+        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+      onClick={() => { setActiveTab("student"); setSubTab(null); }}
+          >
+      Student
+      </Button>
+  </div >
 
   {/* Sub-tabs for Faculty and Student */ }
 {
@@ -454,7 +420,7 @@ return (
 
   ))}
   <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded">
-    {editing ? "Update" : "Add"}
+    {"Add this "}
   </button>
 </form>
 
@@ -492,6 +458,7 @@ return (
   </tbody>
 </table>
     </div >
+    </div>
   );
 };
 export default AdminDashboard;

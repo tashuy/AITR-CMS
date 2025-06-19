@@ -227,15 +227,15 @@ const Faculty = () => {
         </div>
       )}
       <div className="w-[80vw] mx-auto flex gap-4 items-center">
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => {
-            setStartDate(e.target.value);
-            applyFilters();
-          }}
-          className="p-2 border text-black"
-        />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              applyFilters();
+            }}
+            className="p-2 border text-black"
+          />
         <input
           type="date"
           value={endDate}
