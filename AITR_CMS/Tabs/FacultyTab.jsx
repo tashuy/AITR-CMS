@@ -127,7 +127,7 @@ function FacultyTabs(){
       ( header == "Certificate_Link" ? {
         name: header,
         button: true,
-        cell: () => ( <DownloadComponent />),
+        cell: () => ( <DownloadComponent url={url} filename={filename} />),
       } : {
       name: header.split("_").join(" "),
       selector: row => row[header.toLowerCase()],    

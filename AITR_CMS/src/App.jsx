@@ -13,7 +13,7 @@ import { InputElement } from "./components/ui/InputElement";
 import MouDashboard from "../Tabs/MouDashboard";
 import AdminDashboardDemo from "./components/AdminDashBoardDemo";
 import FileUploader from "./components/FileUploader";
-import DownloadComponent from "./components/DownlaodComponent";
+
 // import { FacultyStudentFrom } from "./components/FacultyStudentForm";
 
 const App = () => {

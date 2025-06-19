@@ -10,7 +10,7 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
   try {
     const adminUsername = localStorage.getItem("adminUsername");
     // const url = endpoint
-    url = `http://localhost:8080${endpoint}`
+    const url = `http://localhost:8080${endpoint}`
     const config = {
       method,
       url: url,
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
   const [editing, setEditing] = useState(null);
-
+  const [certificateFile, setCertificateFile] = useState(null)
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -108,7 +108,7 @@ const handleAddOrUpdate = async () => {
 
     let formData = new FormData();
 
-    if (tabKey === "sports" && newEntry.certificateFile) {
+    if (tabKey && newEntry.certificateFile) {
       Object.entries(newEntry).forEach(([key, value]) => {
       if (value !== undefined && key !== "certificateFile") {
         formData.append(key, value);
@@ -116,7 +116,7 @@ const handleAddOrUpdate = async () => {
       }
       });
     }
-  formData.append("certificate", newEntry.certificateFile);
+  formData.append("file", certificateFile); // file must match backend filed name
   formData.append("data", newEntry)
 
 
@@ -178,28 +178,28 @@ case "researchpapers":
   return ["Id", "Faculty Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
 
 case "conference":
-  return ["Id", "Faculty Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "Issn Number", "Indexing", "Certificate Link", "Actions"];
+  return ["Id", "Faculty_Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "Issn Number", "Indexing", "Certificate_Link", "Actions"];
 
 case "awards":
-  return ["Id", "Faculty Name", "Award Name", "Awarded By", "Award Date", "Category", "Recognition Type", "Event Name", "Description", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Award Name", "Awarded By", "Award Date", "Category", "Recognition Type", "Event Name", "Description", "Certificate_Link", "Actions"];
 
 case "developmentprogram":
-  return ["Id", "Faculty Name", "Program Name", "Organized By", "Start Date", "End Date", "Program Type", "Mode", "Location", "Duration Days", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Program Name", "Organized By", "Start Date", "End Date", "Program Type", "Mode", "Location", "Duration Days", "Certificate_Link", "Actions"];
 
 case "patents":
-  return ["Id", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate_Link", "Actions"];
 
 case "certificate":
-  return ["Id", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate_Link", "Actions"];
 
 case "hackathon":
-  return ["Id", "Student Name", "Enrollment Number", "Event Name", "Date", "Team Name", "Team Size", "Mentor Name", "Hackathon Type", "Organizing Body", "Venue", "Problem Statement", "Technology Used", "Prize Money", "Sponsoring Company", "Position", "Project Github Link", "Project Description", "Certificate Status", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Event Name", "Date", "Team Name", "Team Size", "Mentor Name", "Hackathon Type", "Organizing Body", "Venue", "Problem Statement", "Technology Used", "Prize Money", "Sponsoring Company", "Position", "Project Github Link", "Project Description", "Certificate Status", "Certificate_Link", "Actions"];
 
 case "placement":
   return ["Id", "Student Name", "Company Name", "Job Role", "Branch", "Placement Type", "Package", "Joining Date", "Offer Letter Pdf", "Company Location", "Interview Mode", "Actions"];
 
 case "internship":
-  return ["Id", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate_Link", "Actions"];
 
 case "researchpaper":
   return ["Id", "Student Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
@@ -297,40 +297,40 @@ const getFormFields = () => {
       return ["name", "email", "department", "mobile_no", "years_Of_Experience", "designation"];
 
       case "student":
-        return ["name", "email", "year", "course", "branch", "cgpa", "dateOfBirth", "gender", "yearOfAdmission", "yearOfGraduation", "status"];
+        return ["name", "email", "year", "course", "branch", "cgpa", "date_Of_Birth", "gender", "year_Of_Admission", "year_Of_Graduation", "status"];
       
     case "researchpapers":
       return ["faculty_name", "title", "publication_date", "journal_name", "co_authors"];
-    case "conference": return ["facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificatePdf"];
+    case "conference": return ["faculty_Name", "conference_Name", "paper_Title", "presentation_Date", "conference_Type", "conference_Location", "conference_Mode", "publication_Status", "journal_Name", "issue_Number", "indexing", "certificatePdf"];
 
     case "awards":
       return [
-        "facultyName",
-        "awardName",
-        "awardedBy",
-        "awardDate",
+        "faculty_Name",
+        "award_Name",
+        "awarded_By",
+        "award_Date",
         "category",
-        "recognitionType",
-        "eventName",
+        "recognition_Type",
+        "event_Name",
         "description",
         "certificatePdf"
       ];
 
 
-    case "developmentprogram": return ["faculty_Name", "program_Name", "organized_By", "start_Date", "end_Date", "programT_ype", "mode", "location", "duration_Days", "certificate_Link"];
+    case "developmentprogram": return ["faculty_Name", "program_Name", "organized_By", "start_Date", "end_Date", "programT_ype", "mode", "location", "duration_Days", "certificatePdf"];
 
     case "patents":
-      return ["faculty_Name", "patent_Title", "patent_Number", "application_Date", "status", "inventor_Names", "patentType", "patent_Office", "grant_Date", "expiry_Date", "country", "patent_Category", "certificate_Pdf"];
+      return ["faculty_Name", "patent_Title", "patent_Number", "application_Date", "status", "inventor_Names", "patentType", "patent_Office", "grant_Date", "expiry_Date", "country", "patent_Category", "certificatePdf"];
 
     case "certificate":
-      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificate_Pdf"];
+      return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificatePdf"];
     case "hackathon":
-      return ["student_Name", "enrollment_Number", "event_Name", "date", "team_Name", "team_Size", "mentor_Name", "hackathon_Type", "organizing_Body", "venue", "problem_Statement", "technology_Used", "prize_Money", "sponsoring_Company", "position", "project_GithubLink", "project_Description", "certificate_Status", "certificate_Pdf"];
+      return ["student_Name", "enrollment_Number", "event_Name", "date", "team_Name", "team_Size", "mentor_Name", "hackathon_Type", "organizing_Body", "venue", "problem_Statement", "technology_Used", "prize_Money", "sponsoring_Company", "position", "project_GithubLink", "project_Description", "certificate_Status", "certificatePdf"];
 
     case "placement":
       return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offer_letter_pdf", "company_location", "interview_mode"];
     case "internship":
-      return ["studentName", "enrollment_Number", "company_Name", "role", "internship_Type", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologies_Used", "project_Name", "project_Description", "skills_Gained", "company_Location", "internship_Status", "start_Date", "end_Date", "offerLetter_Link", "experience_LetterLink", "certificate_Pdf"];
+      return ["studentName", "enrollment_Number", "company_Name", "role", "internship_Type", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologies_Used", "project_Name", "project_Description", "skills_Gained", "company_Location", "internship_Status", "start_Date", "end_Date", "offerLetter_Link", "experience_LetterLink", "certificatePdf"];
 
     case "researchpaper":
       return ["student_name", "title", "publication_date", "journal_name", "co_authors"];
@@ -372,7 +372,7 @@ return (
       {facultyTabs.map((tab) => (
         <button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
           onClick={() => setSubTab(tab)}
             >
           {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -389,7 +389,7 @@ return (
       {studentTabs.map((tab) => (
         <button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
       onClick={() => setSubTab(tab)}
             >
       {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -408,6 +408,16 @@ return (
 {/* Form */ }
 <form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
   {getFormFields().map((field) => (
+     field == "certificatePdf" ? 
+    <input
+      key={field}
+      type="file"
+      placeholder={field.split("_").join(" ").toUpperCase()}
+      value={newEntry[field] ?? ""} // Ensures no undefined value
+      onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.files[0] })}
+      className="border p-2 rounded"
+      
+    /> :
     <input
       key={field}
       type="text"
@@ -415,7 +425,6 @@ return (
       value={newEntry[field] ?? ""} // Ensures no undefined value
       onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
       className="border p-2 rounded"
-      
     />
 
   ))}
