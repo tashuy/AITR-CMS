@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
+import Navbar from "./Navbar";
+import { API_BASE_URL, apiEndpoints } from "../config";
 
 
 
 const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
   try {
     const adminUsername = localStorage.getItem("adminUsername");
+    // const url = endpoint
+    const url = `http://localhost:8080${endpoint}`
     const config = {
       method,
-      url: `http://localhost:8080${endpoint}`,
+      url: url,
       headers: {
         "Content-Type": "application/json",
         ...(adminUsername && { username: adminUsername }),
@@ -17,8 +21,9 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
       data,
     };
     console.log(`Hitting: ${method} ${config.url}`);
-    const response = await axios(config);
-    console.log("Response:", response);
+    const response = await axios.get(endpoint);
+    
+    console.log("Response:", response.data);
     return response.data;
   } catch (err) {
     console.error("API Error:", err?.response?.data || err.message);
@@ -29,31 +34,19 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
 
 
 // API endpoints
-const apiEndpoints = {
-  faculty: "/admin/faculty",
-  student: "/student",
-  researchpapers: "/faculty-research-papers",
-  conference: "/faculty-conferences",
-  awards: "/admin/faculty-awards", // New endpoint for awards
-  developmentprogram: "/faculty-fdps",
-  patents: "/faculty-patents",
-  certificate: "/certificates",
-  hackathon: '/hackathons',
-  placement: "/student-placements",
-  internship: "/internships",
-  researchpaper: "/research-papers",
-  sports: "/sports"
 
 
-
-};
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab") || "faculty");
-  const [subTab, setSubTab] = useState(null);
+  const [activeTab, setActiveTab] = useState(localStorage.getItem("activeTab"));
+  const [subTab, setSubTab] = useState(localStorage.getItem("subTab"));
   const [data, setData] = useState([]);
   const [newEntry, setNewEntry] = useState({});
   const [editing, setEditing] = useState(null);
+  const [certificateFile, setFile] = useState(null)
+  const previousTab = useRef();
+  const previousSubtab = useRef();
+
 
 
   const handleTabChange = (tab) => {
@@ -65,14 +58,15 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const tabKey = subTab || activeTab;
-      const endpoint = editing
+      const endpoint = editing === "add"
         ? `${apiEndpoints[tabKey]}/${newEntry.id}`
         : apiEndpoints[tabKey];
-
-
+      
       if (!endpoint) return;
-      const res = await fetchDataFromApi(endpoint);
-      setData(res);
+      const  res  = await fetchDataFromApi(endpoint);
+      
+      console.log("res" ,res.response)
+      setData(res.response);
       console.log("API Response:", res);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -80,11 +74,16 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    previousTab.current = activeTab;
+    previousSubtab.current = subTab;
+    localStorage.setItem("subTab" , previousSubtab.current)
+    localStorage.setItem("activeTab" ,previousTab.current)
     fetchData();
   }, [activeTab, subTab]);
+
   const handleDownloadCertificate = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:8080/sports/${id}/certificate`, {
+      const response = await axios.get(`${API_BASE_URL}/sports/${id}/certificate`, {
         responseType: "blob", // ensures it's treated as a file
       });
 
@@ -108,43 +107,48 @@ const AdminDashboard = () => {
 
 // Handle form submission for adding/updating entries
 const handleAddOrUpdate = async () => {
+  // i am defining my own endpoint
   try {
     const tabKey = subTab || activeTab;
-    const endpoint = editing
-      ? `${ apiEndpoints[tabKey]}/${newEntry.id}`
-        : apiEndpoints[tabKey];
-const method = editing ? "PUT" : "POST";
+    const endpoint = `${apiEndpoints[tabKey]}/${newEntry.id}`
+    const method = "POST"
 
-let formData = new FormData();
 
-if (tabKey === "sports" && newEntry.certificateFile) {
-  Object.entries(newEntry).forEach(([key, value]) => {
-    if (value !== undefined && key !== "certificateFile") {
-      formData.append(key, value);
+
+    let formData = new FormData();
+
+    if (tabKey && newEntry.certificateFile) {
+      Object.entries(newEntry).forEach(([key, value]) => {
+      if (value !== undefined && key !== "certificateFile") {
+        formData.append(key, value);
+        console.log("form data: " , formData)
+      }
+      });
     }
-  });
-  formData.append("certificate", newEntry.certificateFile);
-}
+  formData.append("file", certificateFile); // file must match backend filed name
+  formData.append("data", newEntry)
 
-const config = {
-  method,
-  url:` http://localhost:8080${endpoint}`,
-  headers: {
-    ...(tabKey === "sports"
-      ? { "Content-Type": "multipart/form-data" }
-      : { "Content-Type": "application/json" }),
-  },
-  data: tabKey === "sports" ? formData : newEntry,
-};
 
-await axios(config);
-setNewEntry({});
-setEditing(false);
-fetchData(); // Refresh data
-    } catch (error) {
-  console.error("Error adding/updating entry:", error?.response?.data || error.message);
-}
+
+  const config = {
+    method,
+    url:`http://localhost:8080/${endpoint}`,
+    headers: {
+        "Content-Type": "multipart/form-data" 
+        },  
+  // data: tabKey === "sports" ? formData : newEntry,
+    data: formData
   };
+
+  await axios( config ).then(alert("Submitted"))
+
+  setNewEntry({});
+  setEditing(false);
+  fetchData(endpoint); // Refresh data
+      } catch (error) {
+    console.error("Error adding/updating entry:", error?.response?.data || error.message);
+  }
+};
 
 
 
@@ -183,28 +187,28 @@ case "researchpapers":
   return ["Id", "Faculty Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
 
 case "conference":
-  return ["Id", "Faculty Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "Issn Number", "Indexing", "Certificate Link", "Actions"];
+  return ["Id", "Faculty_Name", "Conference Name", "Paper Title", "Presentation Date", "Conference Type", "Conference Location", "Conference Mode", "Publication Status", "Journal Name", "Issn Number", "Indexing", "Certificate_Link", "Actions"];
 
 case "awards":
-  return ["Id", "Faculty Name", "Award Name", "Awarded By", "Award Date", "Category", "Recognition Type", "Event Name", "Description", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Award Name", "Awarded By", "Award Date", "Category", "Recognition Type", "Event Name", "Description", "Certificate_Link", "Actions"];
 
 case "developmentprogram":
-  return ["Id", "Faculty Name", "Program Name", "Organized By", "Start Date", "End Date", "Program Type", "Mode", "Location", "Duration Days", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Program Name", "Organized By", "Start Date", "End Date", "Program Type", "Mode", "Location", "Duration Days", "Certificate_Link", "Actions"];
 
 case "patents":
-  return ["Id", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate Link", "Actions"];
+  return ["Id", "Faculty Name", "Patent Title", "Patent Number", "Application Date", "Status", "Inventor Names", "Patent Type", "Patent Office", "Grant Date", "Expiry Date", "Country", "Patent Category", "Certificate_Link", "Actions"];
 
 case "certificate":
-  return ["Id", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Certificate Name", "Certificate Type", "Issued By", "Issue Date", "Validity Period", "Grade Or Score", "Certificate Description", "Mode Of Training", "Related Course Or Program", "Certificate Status", "Verified", "Certificate_Link", "Actions"];
 
 case "hackathon":
-  return ["Id", "Student Name", "Enrollment Number", "Event Name", "Date", "Team Name", "Team Size", "Mentor Name", "Hackathon Type", "Organizing Body", "Venue", "Problem Statement", "Technology Used", "Prize Money", "Sponsoring Company", "Position", "Project Github Link", "Project Description", "Certificate Status", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Event Name", "Date", "Team Name", "Team Size", "Mentor Name", "Hackathon Type", "Organizing Body", "Venue", "Problem Statement", "Technology Used", "Prize Money", "Sponsoring Company", "Position", "Project Github Link", "Project Description", "Certificate Status", "Certificate_Link", "Actions"];
 
 case "placement":
   return ["Id", "Student Name", "Company Name", "Job Role", "Branch", "Placement Type", "Package", "Joining Date", "Offer Letter Pdf", "Company Location", "Interview Mode", "Actions"];
 
 case "internship":
-  return ["Id", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate Link", "Actions"];
+  return ["Id", "Student Name", "Enrollment Number", "Company Name", "Role", "Internship Type", "Stipend", "Duration", "Department", "Mentor Name", "Mentor Email", "Technologies Used", "Project Name", "Project Description", "Skills Gained", "Company Location", "Internship Status", "Start Date", "End Date", "Offer Letter Link", "Experience Letter Link", "Certificate_Link", "Actions"];
 
 case "researchpaper":
   return ["Id", "Student Name", "Title", "Publication Date", "Journal Name", "Co-Authors", "Actions"];
@@ -302,45 +306,45 @@ const getFormFields = () => {
       return ["name", "email", "department", "mobile_no", "years_Of_Experience", "designation"];
 
       case "student":
-        return ["name", "email", "year", "course", "branch", "cgpa", "dateOfBirth", "gender", "yearOfAdmission", "yearOfGraduation", "status"];
+        return ["name", "email", "year", "course", "branch", "cgpa", "date_Of_Birth", "gender", "year_Of_Admission", "year_Of_Graduation", "status"];
       
     case "researchpapers":
       return ["faculty_name", "title", "publication_date", "journal_name", "co_authors"];
-    case "conference": return ["facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificatePdf"];
+    case "conference": return ["faculty_Name", "conference_Name", "paper_Title", "presentation_Date", "conference_Type", "conference_Location", "conference_Mode", "publication_Status", "journal_Name", "issue_Number", "indexing", "certificatePdf"];
 
     case "awards":
       return [
-        "facultyName",
-        "awardName",
-        "awardedBy",
-        "awardDate",
+        "faculty_Name",
+        "award_Name",
+        "awarded_By",
+        "award_Date",
         "category",
-        "recognitionType",
-        "eventName",
+        "recognition_Type",
+        "event_Name",
         "description",
         "certificatePdf"
       ];
 
 
-    case "developmentprogram": return ["facultyName", "programName", "organizedBy", "startDate", "endDate", "programType", "mode", "location", "durationDays", "certificateLink"];
+    case "developmentprogram": return ["faculty_Name", "program_Name", "organized_By", "start_Date", "end_Date", "programT_ype", "mode", "location", "duration_Days", "certificatePdf"];
 
     case "patents":
-      return ["facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificatePdf"];
+      return ["faculty_Name", "patent_Title", "patent_Number", "application_Date", "status", "inventor_Names", "patentType", "patent_Office", "grant_Date", "expiry_Date", "country", "patent_Category", "certificatePdf"];
 
     case "certificate":
       return ["student_name", "enrollment_number", "certificate_name", "certificate_type", "issued_by", "issue_date", "validity_period", "grade_or_score", "certificate_description", "mode_of_training", "related_course_or_program", "certificate_status", "verified", "certificatePdf"];
     case "hackathon":
-      return ["studentName", "enrollmentNumber", "eventName", "date", "teamName", "teamSize", "mentorName", "hackathonType", "organizingBody", "venue", "problemStatement", "technologyUsed", "prizeMoney", "sponsoringCompany", "position", "projectGithubLink", "projectDescription", "certificateStatus", "certificatePdf"];
+      return ["student_Name", "enrollment_Number", "event_Name", "date", "team_Name", "team_Size", "mentor_Name", "hackathon_Type", "organizing_Body", "venue", "problem_Statement", "technology_Used", "prize_Money", "sponsoring_Company", "position", "project_GithubLink", "project_Description", "certificate_Status", "certificatePdf"];
 
     case "placement":
       return ["id", "student_name", "company_name", "job_role", "branch", "placement_type", "package", "joining_date", "offer_letter_pdf", "company_location", "interview_mode"];
     case "internship":
-      return ["studentName", "enrollmentNumber", "companyName", "role", "internshipType", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologiesUsed", "projectName", "projectDescription", "skillsGained", "companyLocation", "internshipStatus", "startDate", "endDate", "offerLetterLink", "experienceLetterLink", "certificatePdf"];
+      return ["studentName", "enrollment_Number", "company_Name", "role", "internship_Type", "stipend", "duration", "department", "mentorName", "mentorEmail", "technologies_Used", "project_Name", "project_Description", "skills_Gained", "company_Location", "internship_Status", "start_Date", "end_Date", "offerLetter_Link", "experience_LetterLink", "certificatePdf"];
 
     case "researchpaper":
       return ["student_name", "title", "publication_date", "journal_name", "co_authors"];
     case "sports":
-      return ["studentName", "sportName", "achievement", "eventDate", "eventName", "eventLevel", "eventLocation", "position", "certificate", "coachName"];
+      return ["student_Name", "sport_Name", "achievement", "event_Date", "event_Name", "event_Level", "event_Location", "position", "certificate", "coachName"];
 
     default:
       return [];
@@ -350,52 +354,55 @@ const getFormFields = () => {
 
 
 return (
+  <div>
+  <Navbar />
   <div className="p-6 bg-gray-100 text-black min-h-screen">
-    <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
-    {/* Main Tabs */}
-    <div className="flex space-x-4 mb-4">
+      <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
+      {/* Main Tabs */}
+      <div className="flex space-x-4 mb-4">
+        <Button
+          className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+        onClick={() => { setActiveTab("faculty");  }}
+          >
+        Faculty
+      </Button>
       <Button
-        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "faculty" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-      onClick={() => { setActiveTab("faculty"); setSubTab(null); }}
-        >
-      Faculty
-    </Button>
-    <Button
-      className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-    onClick={() => { setActiveTab("student"); setSubTab(null); }}
-        >
-    Student
-  </Button>
-      </div >
+        className={`px - 4 py-2 text-base font-semibold rounded ${activeTab === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+      onClick={() => { setActiveTab("student"); setSubTab(null); }}
+          >
+      Student
+      </Button>
+  </div >
 
   {/* Sub-tabs for Faculty and Student */ }
 {
   activeTab === "faculty" && (
     <div className="flex space-x-4 mb-4">
       {facultyTabs.map((tab) => (
-        <Button
+        <button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
-      onClick={() => setSubTab(tab)}
+          className={`px-4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+          onClick={() => setSubTab(tab)}
             >
-      {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
-  ))
-}
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </button>
+        ))
+      }
         </div >
-      )}
+      )
+  }
 
 {
   activeTab === "student" && (
     <div className="flex space-x-4 mb-4">
       {studentTabs.map((tab) => (
-        <Button
+        <button
           key={tab}
-          className={`px - 4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 text-base font-semibold rounded ${subTab === tab ? "bg-green-500 text-white" : "bg-gray-200"}`}
       onClick={() => setSubTab(tab)}
             >
       {tab.charAt(0).toUpperCase() + tab.slice(1)}
-    </Button>
+    </button>
   ))
 }
         </div >
@@ -410,6 +417,16 @@ return (
 {/* Form */ }
 <form onSubmit={handleAddOrUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
   {getFormFields().map((field) => (
+     field == "certificatePdf" ? 
+    <input
+      key={field}
+      type="file"
+      placeholder={field.split("_").join(" ").toUpperCase()}
+      value={newEntry[field] ?? ""} // Ensures no undefined value
+      onChange={(e) => setFile({ ...newEntry, [field]: e.target.files[0] })}
+      className="border p-2 rounded"
+      
+    /> :
     <input
       key={field}
       type="text"
@@ -417,12 +434,11 @@ return (
       value={newEntry[field] ?? ""} // Ensures no undefined value
       onChange={(e) => setNewEntry({ ...newEntry, [field]: e.target.value })}
       className="border p-2 rounded"
-      required
     />
 
   ))}
   <button type="submit" className="px-4 py-2 text-base font-semibold bg-[#00062B] text-white rounded">
-    {editing ? "Update" : "Add"}
+    {"Add this "}
   </button>
 </form>
 
@@ -460,6 +476,7 @@ return (
   </tbody>
 </table>
     </div >
+    </div>
   );
 };
 export default AdminDashboard;

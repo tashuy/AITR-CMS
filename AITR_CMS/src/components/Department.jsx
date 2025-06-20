@@ -1,9 +1,14 @@
 import React from 'react'
 import Institute from './Institute'
+import MouDashboard from '../../Tabs/MouDashboard'
 
 const department = () => {
+
   return (
-    <Institute/>
+    <div>
+      <Institute/>
+      
+    </div>
   )
 }
 
