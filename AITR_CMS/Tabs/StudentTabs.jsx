@@ -122,9 +122,7 @@ function StudentTabs(){
   ) )
 
 
-  function handleAddData(){
-    postfieldData(subTab , entry)
-  }
+
 
 
     // const data = [
@@ -144,8 +142,6 @@ function StudentTabs(){
     useEffect(() => {
         previousSubTab.current = subTab
         localStorage.setItem('currentTab' , previousSubTab.current)
-
-        setdata(getfieldData(subTab))
         
     }, [subTab])
 
@@ -165,7 +161,7 @@ function StudentTabs(){
     </div >
 
     {/* Form fildes */}
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" onSubmit={handleAddData()}>
+    <form className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4" >
     {getFormFields().map((field) => (
       ( field == "certificate_Pdf" ? 
       <input

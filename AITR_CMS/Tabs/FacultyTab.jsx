@@ -4,21 +4,13 @@ import DownloadComponent from "../src/components/DownlaodComponent";
 // import { getfieldData, postfieldData } from "../src/components/fieldData";
 import { API_BASE_URL, apiEndpoints } from "../src/config";
 import axios from "axios";
+import department from "../src/components/Department";
 
 
 
 function FacultyTabs(){
     
-    const [data , setData ] = useState([{
-      id: 1,
-      title: '1988',
-      faculty_name: 'Ajay',
-      publication_date: 23,
-      journal_name:"ajay",
-      co_authors:"ajay",
-      actions:"delete",
-      url: "downlaod"
-    }])
+    const [data , setData ] = useState([])
     const [subTab, setSubTab ] = useState(localStorage.getItem('currentTab'))
     const [entry , setEntry] = useState([]);
     const [file , setFile ] = useState(null);
@@ -129,10 +121,11 @@ function FacultyTabs(){
         button: true,
         cell: () => ( <DownloadComponent url={url} filename={filename} />),
       } : {
-      name: header.split("_").join(" "),
+      name: header.split("_").join(""),
       selector: row => row[header.toLowerCase()],    
       } )
   ) )
+
 
   const handleAdd = async () => {
     try {
@@ -183,27 +176,16 @@ function FacultyTabs(){
   };
 
   async function fetchData(){
-    const url = "http://localhost:8080/faculty"
-    const response = await axios.get(url)
-    console.log(response.data)
-
-    setData(response.data)
-    console.log(data)
-
-
-    // data = response.data  
+    const url = `${API_BASE_URL}/${subTab}`
+    // const url = "http://localhost:8080/faculty"
+    await axios.get(url).then((response) => setData(response.data.response))
   }
-
-
-
-
-
 
     useEffect(() => {
         previousSubTab.current = subTab
         localStorage.setItem('currentTab' , previousSubTab.current)
-        fetchData()
-        // setdata(getfieldData(subTab))\
+        fetchData()  
+        // setdata(getfieldData(subTab))  
     }, [subTab])
 
 
