@@ -1,6 +1,7 @@
 package CMSAIML.example.CMSAIML.Controller;
 
 import CMSAIML.example.CMSAIML.Entity.*;
+import CMSAIML.example.CMSAIML.dto.MouExcel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -47,7 +48,8 @@ public class ExcelController {
                     getCellValue(row.getCell(2)), // DURATION
                     getCellValue(row.getCell(3)), // DESCRIPTION
                     getCellValue(row.getCell(4)), // FUNDING
-                    getCellValue(row.getCell(5))  // MOU PDF
+                    getCellValue(row.getCell(5))  // MOU
+                    // PDF
             ));
         }
         return list;

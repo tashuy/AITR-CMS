@@ -10,7 +10,7 @@ const fetchDataFromApi = async (endpoint, method = "GET", data = null) => {
   try {
     const adminUsername = localStorage.getItem("adminUsername");
     // const url = endpoint
-    const url = `http://localhost:8080${endpoint}`
+    const url = `http://localhost:8080/faculty-conferences`
     const config = {
       method,
       url: url,
@@ -58,15 +58,22 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const tabKey = subTab || activeTab;
-      const endpoint = editing === "add"
-        ? `${apiEndpoints[tabKey]}/${newEntry.id}`
-        : apiEndpoints[tabKey];
+
+      console.log(tabKey)
+
+      
+
+      const endpoint = `http://localhost:8080/faculty-research-papers`
+      // const endpoint = editing === "add"
+      //   ? `${apiEndpoints[tabKey]}/${newEntry.id}`
+      //   : apiEndpoints[tabKey];
+  
       
       if (!endpoint) return;
       const  res  = await fetchDataFromApi(endpoint);
-      
-      console.log("res" ,res.response)
-      setData(res.response);
+    
+      console.log("res" ,res)
+      setData(res);
       console.log("API Response:", res);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -169,7 +176,7 @@ const handleEdit = (item) => {
   setNewEntry({ ...item }); // Ensure a new object reference
   setEditing(item);
 };
-const facultyTabs = ["researchpaper", "conference", "awards", "developmentprogram", "patents"];
+const facultyTabs = ["researchpaper", "conference", "awards", "development_program", "patents"];
 const studentTabs = ["certificate", "hackathon", "placement", "internship", "researchpaper", "sports"];
 
 
@@ -355,7 +362,7 @@ const getFormFields = () => {
 
 return (
   <div>
-  <Navbar />
+
   <div className="p-6 bg-gray-100 text-black min-h-screen">
       <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
       {/* Main Tabs */}

@@ -2,6 +2,8 @@ package CMSAIML.example.CMSAIML.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Data
@@ -35,6 +37,7 @@ public class FacultyConference {
     private String indexing;
 
     @Lob
-    @Column(name = "certificate_pdf", columnDefinition = "LONGBLOB")
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "certificate_pdf")
     private byte[] certificatePdf;
 }

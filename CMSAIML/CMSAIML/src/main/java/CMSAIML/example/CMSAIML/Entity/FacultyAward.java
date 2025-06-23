@@ -3,6 +3,9 @@ package CMSAIML.example.CMSAIML.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDate;
 
 @Entity
@@ -30,6 +33,7 @@ public class FacultyAward {
     private String description;
 
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
     @Column(name = "certificate_pdf")
     private byte[] certificatePdf;
 }

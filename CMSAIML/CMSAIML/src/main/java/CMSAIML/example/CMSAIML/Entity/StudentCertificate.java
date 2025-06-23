@@ -38,6 +38,6 @@ public class StudentCertificate {
     private Integer verified;
 
     @Lob
-    @Column(name = "certificate_pdf")
+    @Column(name = "certificate_pdf",columnDefinition = "LONGBLOB")
     private byte[] certificatePdf;
 }

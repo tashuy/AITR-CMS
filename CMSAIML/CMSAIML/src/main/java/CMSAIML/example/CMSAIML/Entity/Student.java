@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Student {
+public class    Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

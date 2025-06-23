@@ -31,7 +31,7 @@ public class IPRResearch {
     @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private ResearchStatus status;
+    private ProjectStatus status;
 
     @NotBlank(message = "Principal investigator is required")
     @Column(name = "principal_investigator", nullable = false, length = 255)

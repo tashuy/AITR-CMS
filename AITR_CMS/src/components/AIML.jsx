@@ -73,12 +73,10 @@ const Table = ({ columns, data, selectedRows, setSelectedRows }) => {
                 )}
               </td>
             ))}
-
           </tr>
         ))}
       </tbody>
     </table>
-
   );
 };
 const AIML = () => {
@@ -93,6 +91,7 @@ const AIML = () => {
   const [endDate, setEndDate] = useState("");
   const [selectedRows, setSelectedRows] = useState([]); // Store selected rows
   const [selectedColumns, setSelectedColumns] = useState([]); // Store selected columns
+  console.log("selectedCategory", selectedCategory);
   const CategoriesDetails = {
     Students: [],
     Certificate: [],
@@ -101,6 +100,14 @@ const AIML = () => {
     Internship: [],
     ResearchPaper: [],
     Sports: [],
+    TechnicalandNontechnicalcompetition:[],
+       ExtraCurricular:[],
+    ProjectWork:[],
+    Startup:[],
+    HigherStudies:[],
+    ProffesionalMembership:[]
+    
+
   };
 
   const tableHeaders = {
@@ -116,7 +123,17 @@ const AIML = () => {
       "gender",
       "yearOfAdmission",
       "yearOfGraduation",
-      "status"
+      "status",
+      "enrollmentNumber",
+      "batch",
+      "category",
+      "githubLink",
+      "linkdIn",
+      "profile",
+      "parentscontactNumber",
+      "name",
+      "address"
+
     ],
     Certificate: [
       "id",
@@ -133,7 +150,13 @@ const AIML = () => {
       "relatedCourseOrProgram",
       "certificateStatus",
       "verified",
-      "certificatePdf"
+      "certificatePdf",
+      "branch",
+      "batch",
+      "year",
+      "courseName",
+      "courseDuration",
+      "rank/Position"
     ],
 
     Hackathon: [
@@ -156,10 +179,27 @@ const AIML = () => {
       "projectGithubLink",
       "projectDescription",
       "certificateStatus",
-      "certificatePdf"
+      "certificatePdf",
+      "hackathonName",
+      "result",
+      "dateofEvent"
     ],
 
-    Placement: ["id", "studentName", "companyName", "jobRole", "branch", "placementType", "packageAmount", "joiningDate", "offerLetterPdf", "companyLocation", "interviewMode"],
+    Placement: [
+      "id",
+      "studentName",
+      "companyName",
+      "jobRole",
+      "branch",
+      "placementType",
+      "packageAmount",
+      "joiningDate",
+      "offerLetterPdf",
+      "companyLocation",
+      "interviewMode",
+      "Roll offered",
+      "batchYear"
+    ],
 
     Internship: [
       "id",
@@ -181,8 +221,11 @@ const AIML = () => {
       "internshipStatus",
       "startDate",
       "endDate",
-      
-      "certificatePdf"
+      "certificatePdf",
+      "branch",
+      "batch",
+      "year",
+      "areaofWork"
     ],
 
     ResearchPaper: [
@@ -191,61 +234,104 @@ const AIML = () => {
       "publication_date",
       "journal_name",
       "co_authors",
+      "branch",
+      "batch",
+      "enrollment",
+      "doi/Isbn",
+      "titleofPaper",
+      "indexing",
+      "paper",
+      "facultyGuide",
+      "pdf"
     ],
-    Sports: ["id", "studentName", "sportName", "achievement", "eventDate", "eventName", "eventLevel", "eventLocation", "position", "certificatePdf", "coachName"],
+    Sports: [
+      "id",
+      "studentName",
+      "sportName",
+      "achievement",
+      "eventDate",
+      "eventName",
+      "eventLevel",
+      "eventLocation",
+      "position",
+      "certificatePdf",
+      "coachName",
+      "enrollementNumber",
+      "branch",
+      "year",
+      "organizer",
+    ],
+    TechnicalandNontechnicalcompetition:[
+      "name",
+      "email"
+    ],
+    ExtraCurricular:[
 
+    ],
+    ProjectWork:[
+
+    ]
+  };
+useEffect(() => {
+  const getData = async () => {
+    let data = [];
+    try {
+      switch (selectedCategory) {
+        case "Students":
+          data = await fetchStudentData();
+          break;
+        case "Certificate":
+          data = await fetchCertificatestData();
+          break;
+        case "Hackathon":
+          data = await fetchHackathonsData();
+          break;
+        case "Internship":
+          data = await fetchInternshipsData();
+          break;
+        case "ResearchPaper":
+          data = await fetchResearchpapersData();
+          break;
+        case "Placement":
+          data = await fetchstudentplacementsData();
+          break;
+        case "Sports":
+          data = await fetchSportsData();
+          break;
+           case "Sports":
+          data = await technicalandnontechnicalCompetition();
+          break;
+        default:
+          break;
+      }
+
+      console.log(`Fetched data for ${selectedCategory}:`, data);
+      if (data) {
+        setStudentData(data);
+        setFilteredData(data);
+        if (filter) {
+          const uniqueValues = [
+            ...new Set(data.map((item) => item[filter])),
+          ].filter((v) => v !== undefined);
+          setUniqueFilterValues(uniqueValues);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  useEffect(() => {
-    const getData = async () => {
-      let data = [];
-      try {
-        switch (selectedCategory) {
-          case "Students":
-            data = await fetchStudentData();
-            break;
-          case "Certificate":
-            data = await fetchCertificatestData();
-            break;
-          case "Hackathon":
-            data = await fetchHackathonsData();
-            break;
-          case "Internship":
-            data = await fetchInternshipsData();
-            break;
-          case "ResearchPaper":
-            data = await fetchResearchpapersData();
-            break;
-          case "Placement":
-            data = await fetchstudentplacementsData();
-            break;
-          case "Sports":
-            data = await fetchSportsData();
-            break;
-          default:
-            break;
-        }
+  if (selectedCategory) {
+    getData();
+  }
+}, [selectedCategory, filter]);
 
+useEffect(() => {
+  if (selectedCategory && tableHeaders[selectedCategory]) {
+    setSelectedColumns(tableHeaders[selectedCategory]);
+  }
+}, [selectedCategory]);
 
-        if (data) {
-          setStudentData(data);
-          setFilteredData(data);
-          if (filter) {
-            const uniqueValues = [
-              ...new Set(data.map((item) => item[filter])),
-            ].filter((v) => v !== undefined);
-            setUniqueFilterValues(uniqueValues);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    if (selectedCategory) {
-      getData();
-    }
-  }, [selectedCategory, filter]);
   useEffect(() => {
     if (filter) {
       const uniqueValues = [
@@ -285,14 +371,13 @@ const AIML = () => {
           "yearOfGraduation",
           "dateOfBirth",
           "issueDate",
-          "date",                 // From Hackathon
+          "date", // From Hackathon
           "joiningDate",
           "startDate",
           "endDate",
           "publication_date",
-          "eventDate"
+          "eventDate",
         ];
-
 
         return dateFields.some((field) => {
           if (item[field]) {
@@ -307,8 +392,6 @@ const AIML = () => {
         });
       });
     }
-
-
 
     setFilteredData(filtered);
   }, [searchQuery, filter, filterValues, startDate, endDate, studentData]);
@@ -332,8 +415,6 @@ const AIML = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, selectedCategory);
     XLSX.writeFile(workbook, `${selectedCategory}_SelectedData.xlsx`);
-
-
   };
 
   return (
@@ -427,9 +508,12 @@ const AIML = () => {
           {Object.keys(CategoriesDetails).map((category, index) => (
             <ButtonElement
               key={index}
-              onClick={() => setSelectedCategory(category)}
-              children={category}
-            />
+              onClick={() => {
+                setSelectedCategory(category);
+              }}
+            >
+              {category}
+            </ButtonElement>
           ))}
         </div>
         {selectedCategory && (
@@ -453,22 +537,21 @@ const AIML = () => {
                   />
                   <span>
                     {col
-                      .replace(/_/g, " ")                     // Replace underscores with spaces
-                      .replace(/([a-z])([A-Z])/g, "$1 $2")    // Add space before capital letters
+                      .replace(/_/g, " ") // Replace underscores with spaces
+                      .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before capital letters
                       .toUpperCase()}
                   </span>
                 </label>
               ))}
-
             </div>
           </div>
         )}
-
-        {selectedCategory && (
+        {selectedCategory && filteredData.length > 0 && (
           <div className="mt-10">
             <h2 className="text-4xl font-extrabold text-[#00062B] mb-6">
               {selectedCategory} ({filteredData.length} results)
             </h2>
+
             <Table
               columns={
                 selectedColumns.length > 0
@@ -491,7 +574,6 @@ const AIML = () => {
       </div>
     </div>
   );
-
 };
 
 export default AIML;

@@ -1,10 +1,10 @@
 // Assuming you have already added the following API functions somewhere:
-// import {
-//   fetchMouCollabData,
-//   fetchMouEventData,
-//   fetchMouOthersData,
-//   fetchAchievementData,
-// } from "../api/mouApis";
+ import {
+   fetchMouCollabData,
+   fetchMouEventData,
+   fetchMouOthersData,
+   fetchAchievementData,
+ } from "../api";
 
 import React, { useState, useEffect } from "react";
 import AIMLBG from "../assets/img/AIML_IMG.webp";
@@ -116,7 +116,7 @@ const Institute = () => {
           </button>
       </div>
       <div>
-        { showSubTabs ? <MouDashboard /> : "null" }
+        {/* { showSubTabs ? <MouDashboard /> : "null" } */}
       </div>
 
       {/* Filters and Sub-tabs */}

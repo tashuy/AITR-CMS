@@ -1,6 +1,8 @@
 package CMSAIML.example.CMSAIML.Controller;
 
+import CMSAIML.example.CMSAIML.Entity.AdminInformation;
 import org.springframework.beans.factory.annotation.Autowired;
+import CMSAIML.example.CMSAIML.Service.AdminInformationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,20 +12,20 @@ import java.util.List;
 public class AdminInformationController {
 
     @Autowired
-    private CMSAIML.example.CMSAIML.Controller.AdminInformationService service;
+    private AdminInformationService service;
 
-    @GetMapping
-    public <AdminInformation> List<AdminInformation> getAllAdmins() {
+    @GetMapping("adminInformation")
+    public List<AdminInformation> getAllAdmins() {
         return service.getAllAdmins();
     }
 
     @PostMapping
-    public <AdminInformation> AdminInformation saveAdmin(@RequestBody AdminInformation admin) {
+    public AdminInformation saveAdmin(@RequestBody AdminInformation admin) {
         return service.saveAdmin(admin);
     }
 
     @PostMapping("/bulk")
-    public <AdminInformation> String saveAdmins(@RequestBody List<AdminInformation> admins) {
+    public String saveAdmins(@RequestBody List<AdminInformation> admins) {
         service.saveAllAdmins(admins);
         return "Admins saved successfully!";
     }

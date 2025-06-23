@@ -14,29 +14,29 @@ import MouDashboard from "../Tabs/MouDashboard";
 import AdminDashboardDemo from "./components/AdminDashBoardDemo";
 import FileUploader from "./components/FileUploader";
 
-// import { FacultyStudentFrom } from "./components/FacultyStudentForm";
+//  import { FacultyStudentFrom } from "./components/FacultyStudentForm";
 
 const App = () => {
   return (
 
 
 
-    // <Router>
-    //   {" "}
-    //   <div>
-    //     <Navbar />
-    //     <Navbar2 />
-    //     <Routes>
-    //       <Route path="/" element={<Page1 />} />
-    //       <Route path="/institute" element={<Institute/>}/>;
-    //       <Route path="/department" element={<Department/>}/>;
-    //       <Route path="/faculty" element={<Faculty />} />
-    //       <Route path="/students" element={<Student />} />          
-    //       <Route path="/admin" element={<Admin />} />
-    //       <Route path="/admindashboard" element={<AdminDashboard />} />
-    //     </Routes>
-    //   </div>
-    // </Router>
+     <Router>
+       {" "}
+       <div>
+         <Navbar />
+         <Navbar2 />
+         <Routes>
+           <Route path="/" element={<Page1 />} />
+           <Route path="/institute" element={<Institute/>}/>;
+           <Route path="/department" element={<Department/>}/>;
+           <Route path="/faculty" element={<Faculty />} />
+           <Route path="/students" element={<Student />} />          
+           <Route path="/admin" element={<Admin />} />
+           <Route path="/admindashboard" element={<AdminDashboard />} />
+         </Routes>
+       </div>
+     </Router>
   );
 };
 

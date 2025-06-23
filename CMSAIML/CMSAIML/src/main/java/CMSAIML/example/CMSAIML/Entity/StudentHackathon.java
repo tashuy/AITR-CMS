@@ -31,7 +31,7 @@ public class StudentHackathon {
     private String projectDescription;
     private String certificateStatus;
     @Lob
-    @Column(name = "certificate_pdf")
+    @Column(name = "certificate_pdf",columnDefinition = "LONGBLOB")
     private byte[] certificatePdf;
 
 }

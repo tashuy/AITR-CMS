@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import lombok.Data;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Data
@@ -33,5 +35,6 @@ public class FacultyFdp {
     private int durationDays;
 
     @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
     private byte[] certificatePdf;  // Replaces certificateLink with actual PDF binary
 }

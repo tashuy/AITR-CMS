@@ -24,6 +24,7 @@ public class FacultyPatent {
     private String patentCategory;
 
     @Lob
+
     @Column(name = "certificate_pdf", columnDefinition = "LONGBLOB")
     private byte[] certificatePdf;
 }
