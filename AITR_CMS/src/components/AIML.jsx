@@ -9,6 +9,7 @@ import {
   fetchResearchpapersData,
   fetchSportsData,
   fetchstudentplacementsData,
+  fetchMouCollabData,
 } from "../api";
 import { ButtonElement } from "./ui/ButtonElement";
 
@@ -101,16 +102,235 @@ const AIML = () => {
     ResearchPaper: [],
     Sports: [],
     TechnicalandNontechnicalcompetition:[],
-       ExtraCurricular:[],
+    ExtraCurricular:[],
     ProjectWork:[],
     Startup:[],
     HigherStudies:[],
-    ProffesionalMembership:[]
+    ProffesionalMembership:[],
+    Mous: [ ],
+    CounsultancyProjects: [],
+    Rnd : [],
+    EventGrantReceived : [],
+    profile: [],
+
+
+
+    // changes 1
     
 
   };
 
   const tableHeaders = {
+
+
+  profile: [
+    "id",
+    "name",
+    "email",
+    "qualification",
+    "department",
+    "mobileNumber",
+    "category",
+    "teachingExperience",
+    "industrialExperience",
+    "designation"
+  ],
+
+  researchPaperPublications: [
+    "id",
+    "facultyName",
+    "titleOfPaper",
+    "publicationDate",
+    "journalOrConferenceName",
+    "coAuthor",
+    "indexing",
+    "paperPdf",
+    "issnNumber",
+    "doiLink",
+    "authors",
+    "issnOrIsbn",
+    "department"
+  ],
+
+  facultyAwardsRecognitions: [
+    "id",
+    "recipientName",
+    "department",
+    "awardName",
+    "issuingOrganization",
+    "date",
+    "category",
+    "eventName",
+    "descriptionPurpose",
+    "certificatePdf",
+    "titleOfAward",
+    "level",
+    "supportingDocument"
+  ],
+
+  facultyDevelopmentPrograms: [
+    "id",
+    "facultyName",
+    "department",
+    "fdpTitle",
+    "organizingInstitute",
+    "startDate",
+    "endDate",
+    "programType",
+    "mode",
+    "location",
+    "numberOfDays",
+    "certificatePdf",
+    "outcomeHighlights"
+  ],
+
+  patentPublished: [
+    "id",
+    "facultyName",
+    "department",
+    "title",
+    "applicant",
+    "applicationNumber",
+    "applicationDate",
+    "status",
+    "coInventors",
+    "country",
+    "category",
+    "certificatePdf",
+    "patentTitle",
+    "inventors",
+    "publicationDate",
+    "abstract"
+  ],
+
+  patentGranted: [
+    "patentTitle",
+    "inventors",
+    "grantNumber",
+    "dateOfGrant",
+    "countryOfGrant",
+    "applicationNumber",
+    "patentCertificateUpload"
+  ],
+
+  professionalCertifications: [
+    "facultyName",
+    "certificationName",
+    "issuingBody",
+    "certificationLevel",
+    "validityPeriod",
+    "fieldOrDomain",
+    "certificateUpload"
+  ],
+
+  professionalMemberships: [
+    "facultyName",
+    "organizationName",
+    "membershipType",
+    "membershipId",
+    "dateOfJoining",
+    "currentStatus"
+  ],
+
+  academicQualifications: [
+    "highestDegreeEarned",
+    "universityOrInstitute",
+    "specialization",
+    "yearOfCompletion",
+    "supportingDocument"
+  ],
+
+  phdSupervision: [
+    "facultyName",
+    "phdScholarName",
+    "universityAffiliation",
+    "status",
+    "researchTopic",
+    "dateOfRegistrationOrCompletion"
+  ],
+
+  researchProjectsGuided: [
+    "projectTitle",
+    "level",
+    "studentNames",
+    "outcome"
+  ],
+
+  invitedTalks: [
+    "facultyName",
+    "titleOfTalk",
+    "eventName",
+    "organizingBody",
+    "date",
+    "natureOfEngagement",
+    "supportingCertificate"
+  ],
+
+  booksChaptersAuthored: [
+    "titleOfBookOrChapter",
+    "publisher",
+    "isbn",
+    "yearOfPublication",
+    "coAuthors"
+  ],
+    EventGrantReceived : [
+      "eventTitle",
+      "departmentName",
+      "grantingAgency",
+      "dateOfApproval",
+      "duration",
+      "description",
+      "funding",
+      "pdf",
+      "grantAmount",
+      "facultyCoordinator",
+      "purpose",
+      "utilizationSummary"
+    ],
+    Rnd : [
+      "departmentName",
+      "agencyName",
+      "date",
+      "duration",
+      "description",
+      "funding",
+      "pdf",
+      "projectTitle",
+      "fundingAgency",
+      "principalInvestigator",
+      "coInvestigator",
+      "budget",
+      "outputPatentsPublications"
+    ],
+    CounsultancyProjects : [
+      "departmentName",
+      "agencyName",
+      "date",
+      "duration",
+      "description",
+      "funding",
+      "pdf",
+      "titleOfConsultancy",
+      "clientIndustryPartner",
+      "facultyLead",
+      "amountSanctioned",
+      "supportingDocuments"
+    ],
+    Mous: [
+      "departmentName",
+      "agencyName",
+      "date",
+      "duration",
+      "description",
+      "funding",
+      "mouPdf",
+      "titleOfMou",
+      "industryOrganizationName",
+      "dateOfSigning",
+      "validityPeriod",
+      "purposeObjectives",
+      "fundSupportReceived"
+    ],
     Students: [
       "id",
       "name",
@@ -266,12 +486,17 @@ const AIML = () => {
       "email"
     ],
     ExtraCurricular:[
+      "ajay"
 
     ],
     ProjectWork:[
+      "hi"
 
     ]
+
+    // changes here
   };
+
 useEffect(() => {
   const getData = async () => {
     let data = [];
@@ -298,8 +523,11 @@ useEffect(() => {
         case "Sports":
           data = await fetchSportsData();
           break;
-           case "Sports":
-          data = await technicalandnontechnicalCompetition();
+        case "Sports":
+          data = await technicalandnontechnicalCompetition()
+          break;
+        case "Mous":
+          data = await fetchMouCollabData()
           break;
         default:
           break;
@@ -504,7 +732,8 @@ useEffect(() => {
       </div>
 
       <div className="w-[80vw] m-auto mt-8">
-        <div className="flex justify-center gap-2 py-2">
+        {/* changes here */}
+        <div className="flex flex-wrap justify-center gap-2 py-2 ">
           {Object.keys(CategoriesDetails).map((category, index) => (
             <ButtonElement
               key={index}

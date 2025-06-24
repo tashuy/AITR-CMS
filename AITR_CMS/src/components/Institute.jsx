@@ -41,6 +41,67 @@ const Institute = () => {
     }
   };
   const tableHeaders = {
+    Mous: [
+      "DEPARTMENT NAME",
+      "AGENCY NAME",
+      "DATE",
+      "DURATION",
+      "DESCRIPTION",
+      "FUNDING",
+      "PDF",
+      "TITLE OF CONSULTANCY",
+      "CLIENT/INDUSTRY PARTNER",
+      "FACULTY LEAD",
+      "Amount Sanctioned",
+      "Supporting Documents"
+    ],
+    ConsultancyProjects: [
+      "DEPARTMENT NAME",
+      "AGENCY NAME",
+      "DATE",
+      "DURATION",
+      "DESCRIPTION",
+      "FUNDING",
+      "PDF",
+      "PROJECT TITLE",
+      "FUNDING AGENCY",
+      "PRINCIPAL INVESTIGATOR (PI)",
+      "CO-INVESTIGATOR",
+      "BUDGET",
+      "OUTPUT/PATENTS/PUBLICATIONS"
+    ],
+    EventGrandReceived: [
+      "EVENT TITLE",
+      "DEPARTMENT NAME",
+      "GRANTING AGENCY",
+      "DATE OF APPROVAL",
+      "DURATION",
+      "DESCRIPTION",
+      "FUNDING",
+      "PDF",
+      "GRANT AMOUNT",
+      "FACULTY COORDINATOR",
+      "PURPOSE",
+      "UTILIZATION SUMMARY"
+    ],
+    EventGrand: [
+      "TYPE OF THE EVENT",
+      "DEPARTMENT NAME",
+      "GRANTING AGENCY",
+      "CATEGORY",
+      "NUMBER OF PARTICIPANTS",
+      "DATE OF APPROVAL",
+      "DURATION",
+      "DESCRIPTION",
+      "FUNDING",
+      "PDF",
+      "EVENT TITLE",
+      "GRANT AMOUNT",
+      "FACULTY COORDINATOR",
+      "PURPOSE",
+      "UTILIZATION SUMMARY"
+    ],
+
     Collab: [
       "id",
       "instituteName",
