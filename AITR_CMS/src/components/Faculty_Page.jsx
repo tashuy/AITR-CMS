@@ -28,6 +28,18 @@ const Faculty = () => {
     , Conference: ["id", "facultyName", "conferenceName", "paperTitle", "presentationDate", "conferenceType", "conferenceLocation", "conferenceMode", "publicationStatus", "journalName", "issnNumber", "indexing", "certificatePdf"]
     , DevelopmentProgram: ["id", "facultyName", "programName", "organizedBy", "startDate", "endDate", "programType", "mode", "location", "durationDays", "certificatePdf"],
     Patents: ["id", "facultyName", "patentTitle", "patentNumber", "applicationDate", "status", "inventorNames", "patentType", "patentOffice", "grantDate", "expiryDate", "country", "patentCategory", "certificatePdf"],
+        researchPaperPublications: [],
+    facultyAwardsRecognitions: [],
+    facultyDevelopmentPrograms: [],
+    patentPublished: [],
+    patentGranted: [],
+    professionalCertifications: [],
+    professionalMemberships: [],
+    academicQualifications: [],
+    phdSupervision: [],
+    researchProjectsGuided: [],
+    invitedTalks: [],
+    booksChaptersAuthored: []
   };
 
   const downloadCertificate = async (url, fileName) => {
@@ -189,25 +201,29 @@ const Faculty = () => {
           </h1>
         </div>
       </div>
-      <div className="w-[80vw] mx-auto my-8 flex gap-4 items-center">
+      <div className="w-[80vw] mx-auto my-8 flex flex-col gap-4 items-center">
+        <div>
         <input
           type="text"
           placeholder="Search..."
-          className="flex-1 p-3 border text-black font-semibold border-gray-400 rounded"
+          className="flex-1 p-3 border text-black  font-semibold border-gray-400 rounded "
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
             applyFilters(); // Apply filter whenever the search text changes
           }}
         />
+        </div>
 
-        {Object.keys(tableHeaders).map((category) => (
+        <div className="w-[80vw] mx-auto my-8 flex flex-wrap gap-4 items-center">
+          {Object.keys(tableHeaders).map((category) => (
           <ButtonElement
             key={category}
             onClick={() => setSelectedCategory(category)}
             children={category}
           />
         ))}
+        </div>
       </div>
       {selectedCategory && (
         <div className="w-[80vw] mx-auto my-4 p-4 border border-gray-400 rounded bg-gray-200 text-black">
